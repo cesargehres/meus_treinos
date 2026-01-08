@@ -1,5 +1,5 @@
-import 'package:meus_treinos/data/sources/models/exercise_db_model/exercise_db_model.dart';
-import 'package:meus_treinos/data/sources/models/workout_db_model/workout_db_model.dart';
+import 'package:meus_treinos/data/services/models/exercise_db_model/exercise_db_model.dart';
+import 'package:meus_treinos/data/services/models/workout_db_model/workout_db_model.dart';
 import 'package:result_dart/result_dart.dart';
 
 abstract interface class DataBaseLocal {
