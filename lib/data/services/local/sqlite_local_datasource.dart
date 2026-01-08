@@ -110,7 +110,10 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
 
 
   @override
-  Future<Result<WorkoutDbModel>> createWorkout({required String workoutName, required int weekday}) async {
+  Future<Result<WorkoutDbModel>> createWorkout({
+    required String workoutName,
+    required int weekday
+  }) async {
     try {
       final db = await database;
 
@@ -170,7 +173,7 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
 
       final Map<String, Object?> map = result.first;
 
-      final exercise = ExerciseDbModel(
+      final ExerciseDbModel exercise = ExerciseDbModel(
         exerciseId: map['exercise_id'] as int,
         workoutId: map['workout_id'] as int,
         exerciseName: map['exercise_name'] as String,
@@ -181,7 +184,8 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
 
       return Success(exercise);
     } catch (e, s) {
-      final technical = '$e\n$s';
+      final String technical = '$e\n$s';
+
       debugPrint(technical);
 
       return Failure(
@@ -196,14 +200,98 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
 
 
   @override
-  Future<Result<WorkoutDbModel>> readWorkout({required int workoutId}) {
-    throw UnimplementedError();
+  Future<Result<WorkoutDbModel>> readWorkout({
+    required int workoutId
+  }) async {
+    try {
+      final db = await database;
+
+      final List<Map<String, Object?>> result = await db.query(
+        _tblWorkouts,
+        where: 'workout_id = ?',
+        whereArgs: [workoutId],
+        limit: 1
+      );
+
+      if (result.isEmpty) {
+        return Failure(
+          LocalStorageException(
+            message: 'Treino não encontrado',
+            technicalMessage: 'No workout found with id=$workoutId',
+            code: 'SQLITE_WORKOUT_NOT_FOUND'
+          )
+        );
+      }
+
+      final Map<String, Object?> map = result.first;
+
+      final WorkoutDbModel workout = WorkoutDbModel(
+        workoutId: workoutId,
+        workoutName: map['workout_name'] as String,
+        weekday: map['weekday'] as int
+      );
+
+      return Success(workout);
+    } catch (e, s) {
+      final String technical = '$e\n$s';
+
+      debugPrint(technical);
+
+      return Failure(
+        LocalStorageException(
+          message: 'Erro ao buscar treino',
+          technicalMessage: technical,
+          code: 'SQLITE_READ_WORKOUT'
+        )
+      );
+    }
   }
 
   @override
-  Future<Result<WorkoutDbModel>> readWorkoutByWeekday({required int weekday}) {
-    // TODO: implement readWorkoutByWeekday
-    throw UnimplementedError();
+  Future<Result<WorkoutDbModel>> readWorkoutByWeekday({
+    required int weekday
+  }) async {
+    try {
+      final db = await database;
+
+      final List<Map<String, Object?>> result = await db.query(
+        _tblWorkouts,
+        where: 'weekday = ?',
+        whereArgs: [weekday],
+      );
+
+      if (result.isEmpty) {
+        return Failure(
+          LocalStorageException(
+            message: 'Treino não encontrado',
+            technicalMessage: 'No workout found with weekday=$weekday',
+            code: 'SQLITE_WORKOUT_NOT_FOUND'
+          )
+        );
+      }
+
+      final Map<String, Object?> map = result.first;
+
+      final WorkoutDbModel workout = WorkoutDbModel(
+        workoutId: map['workout_id'] as int,
+        workoutName: map['workout_name'] as String,
+        weekday: weekday
+      );
+
+      return Success(workout);
+    } catch (e, s) {
+      final String technical = '$e\n$s';
+
+      debugPrint(technical);
+
+      return Failure(
+        LocalStorageException(
+          message: 'Erro ao buscar treino',
+          technicalMessage: technical,
+          code: 'SQLITE_READ_WORKOUT'
+        )
+      );
+    }
   }
 
   @override
