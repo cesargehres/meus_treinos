@@ -262,20 +262,20 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
 
       if (result.isEmpty) {
         return Failure(
-          LocalStorageException(
-            message: 'Treino não encontrado',
-            technicalMessage: 'No workout found with weekday=$weekday',
-            code: 'SQLITE_WORKOUT_NOT_FOUND'
-          )
+            LocalStorageException(
+                message: 'Treino não encontrado',
+                technicalMessage: 'No workout found with weekday=$weekday',
+                code: 'SQLITE_WORKOUT_NOT_FOUND'
+            )
         );
       }
 
       final Map<String, Object?> map = result.first;
 
       final WorkoutDbModel workout = WorkoutDbModel(
-        workoutId: map['workout_id'] as int,
-        workoutName: map['workout_name'] as String,
-        weekday: weekday
+          workoutId: map['workout_id'] as int,
+          workoutName: map['workout_name'] as String,
+          weekday: weekday
       );
 
       return Success(workout);
@@ -295,20 +295,133 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
   }
 
   @override
-  Future<Result<List<WorkoutDbModel>>> readWorkouts() {
-    // TODO: implement readWorkouts
-    throw UnimplementedError();
+  Future<Result<List<WorkoutDbModel>>> readWorkouts() async {
+    try {
+      final db = await database;
+
+      final List<Map<String, Object?>> result = await db.query(
+        _tblWorkouts,
+        orderBy: 'weekday ASC',
+      );
+
+      List<WorkoutDbModel> workouts = result.map((workout) {
+        return WorkoutDbModel(
+          workoutId: workout['workout_id'] as int,
+          workoutName: workout['workout_name'] as String,
+          weekday: workout['weekday'] as int
+        );
+      }).toList();
+
+      return Success(workouts);
+    } catch (e, s) {
+      final String technical = '$e\n$s';
+
+      debugPrint(technical);
+
+      return Failure(
+        LocalStorageException(
+          message: 'Erro ao buscar treinos',
+          technicalMessage: technical,
+          code: 'SQLITE_READ_WORKOUT'
+        )
+      );
+    }
   }
 
   @override
-  Future<Result<ExerciseDbModel>> updateExercise({required int exerciseId, required String exerciseName, required int series, required int repeats, required double weight}) {
-    // TODO: implement updateExercise
-    throw UnimplementedError();
+  Future<Result<ExerciseDbModel>> updateExercise({
+    required int exerciseId,
+    required String exerciseName,
+    required int series,
+    required int repeats,
+    required double weight,
+  }) async {
+    try {
+      final db = await database;
+
+      final int rowsAffected = await db.update(
+        _tblExercises,
+        {
+          'exercise_name': exerciseName,
+          'series': series,
+          'repeats': repeats,
+          'weight': weight,
+        },
+        where: 'exercise_id = ?',
+        whereArgs: [exerciseId],
+      );
+
+      if (rowsAffected == 0) {
+        return Failure(
+          LocalStorageException(
+            message: 'Exercício não encontrado',
+            technicalMessage: 'No exercise updated with id=$exerciseId',
+            code: 'SQLITE_UPDATE_EXERCISE_NOT_FOUND',
+          ),
+        );
+      }
+
+      final Result<ExerciseDbModel> updatedExercise = await readExercise(exerciseId: exerciseId);
+
+      return updatedExercise;
+    } catch (e, s) {
+      final technical = '$e\n$s';
+      debugPrint(technical);
+
+      return Failure(
+        LocalStorageException(
+          message: 'Erro ao atualizar o exercício',
+          technicalMessage: technical,
+          code: 'SQLITE_UPDATE_EXERCISE',
+        ),
+      );
+    }
   }
 
   @override
-  Future<Result<WorkoutDbModel>> updateWorkout({required int workoutId, required String workoutName, required int weekday}) {
-    // TODO: implement updateWorkout
-    throw UnimplementedError();
+  Future<Result<WorkoutDbModel>> updateWorkout({
+    required int workoutId,
+    required String workoutName,
+    required int weekday
+  }) async {
+    try {
+      final db = await database;
+
+      final int rowsAffected = await db.update(
+        _tblWorkouts,
+        {
+          'workout_name': workoutName,
+          'weekday': weekday
+        },
+        where: 'workout_id = ?',
+        whereArgs: [workoutId]
+      );
+
+      if (rowsAffected == 0) {
+        return Failure(
+          LocalStorageException(
+            message: 'Treino não encontrado',
+            technicalMessage: 'No worjout updated with id=$workoutId',
+            code: 'SQLITE_UPDATE_WORKOUT_NOT_FOUND',
+          ),
+        );
+      }
+
+      final Result<WorkoutDbModel> updatedWorkout = await readWorkout(workoutId: workoutId);
+
+      return updatedWorkout;
+    } catch (e, s) {
+      final String technical = '$e\n$s';
+
+      debugPrint(technical);
+
+      return Failure(
+        LocalStorageException(
+          message: 'Erro ao atualizar o treino',
+          technicalMessage: technical,
+          code: 'SQLITE_UPDATE_WORKOUT',
+        ),
+      );
+    }
   }
 }
