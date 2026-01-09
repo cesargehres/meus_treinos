@@ -1,35 +1,34 @@
 import 'package:meus_treinos/data/services/models/exercise_db_model/exercise_db_model.dart';
 import 'package:meus_treinos/data/services/models/workout_db_model/workout_db_model.dart';
-import 'package:result_dart/result_dart.dart';
 
 abstract interface class DataBaseLocalInterface {
   // ---------- READ ----------
-  Future<Result<List<WorkoutDbModel>>> readWorkouts();
-  Future<Result<WorkoutDbModel>> readWorkout({required int workoutId});
-  Future<Result<WorkoutDbModel>> readWorkoutByWeekday({required int weekday});
-  Future<Result<ExerciseDbModel>> readExercise({required int exerciseId});
+  Future<List<WorkoutDbModel>> readWorkouts();
+  Future<WorkoutDbModel> readWorkout({required int workoutId});
+  Future<WorkoutDbModel> readWorkoutByWeekday({required int weekday});
+  Future<ExerciseDbModel> readExercise({required int exerciseId});
 
   // ---------- CREATE ----------
-  Future<Result<WorkoutDbModel>> createWorkout({
+  Future<WorkoutDbModel> createWorkout({
     required WorkoutDbModel workoutDbModel
   });
 
-  Future<Result<ExerciseDbModel>> createExercise({
+  Future<ExerciseDbModel> createExercise({
     required ExerciseDbModel exerciseDbModel
   });
 
   // ---------- UPDATE ----------
-  Future<Result<WorkoutDbModel>> updateWorkout({
+  Future<WorkoutDbModel> updateWorkout({
     required WorkoutDbModel workoutDbModel
   });
 
-  Future<Result<ExerciseDbModel>> updateExercise({
+  Future<ExerciseDbModel> updateExercise({
     required ExerciseDbModel exerciseDbModel
   });
 
 
   // ---------- DELETE ----------
-  Future<Result<Unit>> deleteExercise({required int exerciseId});
+  Future<void> deleteExercise({required int exerciseId});
 
-  Future<Result<Unit>> deleteWorkout({required int workoutId});
+  Future<void> deleteWorkout({required int workoutId});
 }

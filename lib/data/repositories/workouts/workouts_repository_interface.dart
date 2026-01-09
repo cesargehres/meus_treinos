@@ -1,2 +1,3 @@
 abstract interface class WorkoutsRepositoryInterface {
+
 }
