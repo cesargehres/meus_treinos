@@ -7,6 +7,7 @@ abstract interface class DataBaseLocalInterface {
   Future<WorkoutDbModel> readWorkout({required int workoutId});
   Future<WorkoutDbModel> readWorkoutByWeekday({required int weekday});
   Future<ExerciseDbModel> readExercise({required int exerciseId});
+  Future<List<ExerciseDbModel>> readExercisesByWorkout({required int workoutId});
 
   // ---------- CREATE ----------
   Future<WorkoutDbModel> createWorkout({
