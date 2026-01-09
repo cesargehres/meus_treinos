@@ -1,12 +1,16 @@
 import 'package:meus_treinos/data/repositories/workouts/workout_repository_interface.dart';
+import 'package:meus_treinos/data/services/local/db_local_interface.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
 import 'package:meus_treinos/domain/models/workout/workout.dart';
-import 'package:result_dart/src/types.dart';
+import 'package:result_dart/result_dart.dart';
 
 class WorkoutRepository implements WorkoutRepositoryInterface {
+  final DataBaseLocalInterface dataBaseLocal;
+
+  WorkoutRepository({required this.dataBaseLocal});
+
   @override
   Future<Result<Exercise>> createExercise({required exercise}) {
-    // TODO: implement createExercise
     throw UnimplementedError();
   }
 

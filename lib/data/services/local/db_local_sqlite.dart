@@ -8,7 +8,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 
-class DbLocalSqlite implements DataBaseLocalInterface {
+class DataBaseLocalSqlite implements DataBaseLocalInterface {
   static Database? _database;
   static const String _dbName = 'meus_treinos_db.db';
   static const int _dbVersion = 1;
