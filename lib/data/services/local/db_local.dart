@@ -37,4 +37,10 @@ abstract interface class DataBaseLocal {
     required int repeats,
     required double weight
   });
+
+
+  // ---------- DELETE ----------
+  Future<Result<Unit>> deleteExercise({required int exerciseId});
+
+  Future<Result<Unit>> deleteWorkout({required int workoutId});
 }

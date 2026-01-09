@@ -424,4 +424,80 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
       );
     }
   }
+
+  @override
+  Future<Result<Unit>> deleteExercise({required int exerciseId}) async {
+    try {
+      final db = await database;
+
+      final int rowsAffected = await db.delete(
+        _tblExercises,
+        where: 'exercise_id = ?',
+        whereArgs: [exerciseId],
+      );
+
+      if (rowsAffected == 0) {
+        return Failure(
+          LocalStorageException(
+            message: 'Exercício não encontrado',
+            technicalMessage: 'No exercise deleted with id=$exerciseId',
+            code: 'SQLITE_DELETE_EXERCISE_NOT_FOUND',
+          ),
+        );
+      }
+
+      return Success(unit);
+    } catch (e, s) {
+      final technical = '$e\n$s';
+      debugPrint(technical);
+
+      return Failure(
+        LocalStorageException(
+          message: 'Erro ao deletar o exercício',
+          technicalMessage: technical,
+          code: 'SQLITE_DELETE_EXERCISE',
+        ),
+      );
+    }
+  }
+
+
+  @override
+  Future<Result<Unit>> deleteWorkout({
+    required int workoutId
+  }) async {
+    try {
+      final db = await database;
+
+      final int rowsAffected = await db.delete(
+        _tblWorkouts,
+        where: 'workout_id = ?',
+        whereArgs: [workoutId]
+      );
+
+      if (rowsAffected == 0) {
+        return Failure(
+          LocalStorageException(
+            message: 'Treino não encontrado',
+            technicalMessage: 'No workout deleted with id=$workoutId',
+            code: 'SQLITE_DELETE_WORKOUT_NOT_FOUND',
+          ),
+        );
+      }
+
+      return Success(unit);
+    } catch (e, s) {
+      final String technical = '$e\n$s';
+
+      debugPrint(technical);
+
+      return Failure(
+        LocalStorageException(
+          message: 'Erro ao deletar o treino',
+          technicalMessage: technical,
+          code: 'SQLITE_DELETE_WORKOUT',
+        ),
+      );
+    }
+  }
 }
