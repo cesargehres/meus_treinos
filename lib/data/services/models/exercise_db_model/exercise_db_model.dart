@@ -6,7 +6,7 @@ part 'exercise_db_model.freezed.dart';
 @freezed
 abstract class ExerciseDbModel with _$ExerciseDbModel {
   factory ExerciseDbModel({
-    required int exerciseId,
+    int? exerciseId,
     required int workoutId,
     required String exerciseName,
     required int series,

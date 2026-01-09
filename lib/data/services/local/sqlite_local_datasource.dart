@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:meus_treinos/data/services/local/db_local.dart';
+import 'package:meus_treinos/data/services/local/db_local_interface.dart';
 import 'package:meus_treinos/data/services/models/exercise_db_model/exercise_db_model.dart';
 import 'package:meus_treinos/data/services/models/workout_db_model/workout_db_model.dart';
 import 'package:meus_treinos/utils/exceptions.dart';
@@ -9,7 +9,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 
-class SQLiteDatabaseLocal implements DataBaseLocal {
+class SQLiteDatabaseLocal implements DataBaseLocalInterface {
   static Database? _database;
   static const String _dbName = 'meus_treinos_db.db';
   static const int _dbVersion = 1;
@@ -62,11 +62,7 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
 
   @override
   Future<Result<ExerciseDbModel>> createExercise({
-    required int workoutId,
-    required String exerciseName,
-    required int series,
-    required int repeats,
-    required double weight,
+    required ExerciseDbModel exerciseDbModel
   }) async {
     try {
       final db = await database;
@@ -74,22 +70,22 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
       final int exerciseId = await db.insert(
         _tblExercises,
         {
-          'workout_id': workoutId,
-          'exercise_name': exerciseName,
-          'series': series,
-          'repeats': repeats,
-          'weight': weight,
+          'workout_id': exerciseDbModel.workoutId,
+          'exercise_name': exerciseDbModel.exerciseName,
+          'series': exerciseDbModel.series,
+          'repeats': exerciseDbModel.repeats,
+          'weight': exerciseDbModel.weight,
         },
         conflictAlgorithm: ConflictAlgorithm.abort,
       );
 
       final ExerciseDbModel exercise = ExerciseDbModel(
         exerciseId: exerciseId,
-        workoutId: workoutId,
-        exerciseName: exerciseName,
-        series: series,
-        repeats: repeats,
-        weight: weight,
+        workoutId: exerciseDbModel.workoutId,
+        exerciseName: exerciseDbModel.exerciseName,
+        series: exerciseDbModel.series,
+        repeats: exerciseDbModel.repeats,
+        weight: exerciseDbModel.weight,
       );
 
       return Success(exercise);
@@ -111,8 +107,7 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
 
   @override
   Future<Result<WorkoutDbModel>> createWorkout({
-    required String workoutName,
-    required int weekday
+    required WorkoutDbModel workoutDbModel
   }) async {
     try {
       final db = await database;
@@ -120,15 +115,15 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
       final int workoutId = await db.insert(
           _tblWorkouts,
           {
-            'workout_name': workoutName,
-            'weekday': weekday
+            'workout_name': workoutDbModel.workoutName,
+            'weekday': workoutDbModel.weekday
           }
       );
 
       final WorkoutDbModel workout = WorkoutDbModel(
           workoutId: workoutId,
-          workoutName: workoutName,
-          weekday: weekday
+          workoutName: workoutDbModel.workoutName,
+          weekday: workoutDbModel.weekday
       );
 
       return Success(workout);
@@ -330,38 +325,44 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
 
   @override
   Future<Result<ExerciseDbModel>> updateExercise({
-    required int exerciseId,
-    required String exerciseName,
-    required int series,
-    required int repeats,
-    required double weight,
+    required ExerciseDbModel exerciseDbModel
   }) async {
     try {
+      if (exerciseDbModel.exerciseId == null) {
+        return Failure(
+          LocalStorageException(
+            message: 'Não é possível atualizar um exercício sem id',
+            technicalMessage: 'exerciseId was null when calling updateExercise',
+            code: 'SQLITE_UPDATE_EXERCISE_NO_ID',
+          ),
+        );
+      }
+
       final db = await database;
 
       final int rowsAffected = await db.update(
         _tblExercises,
         {
-          'exercise_name': exerciseName,
-          'series': series,
-          'repeats': repeats,
-          'weight': weight,
+          'exercise_name': exerciseDbModel.exerciseName,
+          'series': exerciseDbModel.series,
+          'repeats': exerciseDbModel.repeats,
+          'weight': exerciseDbModel.weight,
         },
         where: 'exercise_id = ?',
-        whereArgs: [exerciseId],
+        whereArgs: [exerciseDbModel.exerciseId],
       );
 
       if (rowsAffected == 0) {
         return Failure(
           LocalStorageException(
             message: 'Exercício não encontrado',
-            technicalMessage: 'No exercise updated with id=$exerciseId',
+            technicalMessage: 'No exercise updated with id=${exerciseDbModel.exerciseId}',
             code: 'SQLITE_UPDATE_EXERCISE_NOT_FOUND',
           ),
         );
       }
 
-      final Result<ExerciseDbModel> updatedExercise = await readExercise(exerciseId: exerciseId);
+      final Result<ExerciseDbModel> updatedExercise = await readExercise(exerciseId: exerciseDbModel.exerciseId!);
 
       return updatedExercise;
     } catch (e, s) {
@@ -380,34 +381,42 @@ class SQLiteDatabaseLocal implements DataBaseLocal {
 
   @override
   Future<Result<WorkoutDbModel>> updateWorkout({
-    required int workoutId,
-    required String workoutName,
-    required int weekday
+    required WorkoutDbModel workoutDbModel
   }) async {
     try {
+      if (workoutDbModel.workoutId == null) {
+        return Failure(
+          LocalStorageException(
+            message: 'Não é possível atualizar um treino sem id',
+            technicalMessage: 'exerciseId was null when calling updateWorkout',
+            code: 'SQLITE_UPDATE_WORKOUT_NO_ID',
+          ),
+        );
+      }
+
       final db = await database;
 
       final int rowsAffected = await db.update(
         _tblWorkouts,
         {
-          'workout_name': workoutName,
-          'weekday': weekday
+          'workout_name': workoutDbModel.workoutName,
+          'weekday': workoutDbModel.weekday
         },
         where: 'workout_id = ?',
-        whereArgs: [workoutId]
+        whereArgs: [workoutDbModel.workoutId]
       );
 
       if (rowsAffected == 0) {
         return Failure(
           LocalStorageException(
             message: 'Treino não encontrado',
-            technicalMessage: 'No worjout updated with id=$workoutId',
+            technicalMessage: 'No workout updated with id=${workoutDbModel.workoutId}',
             code: 'SQLITE_UPDATE_WORKOUT_NOT_FOUND',
           ),
         );
       }
 
-      final Result<WorkoutDbModel> updatedWorkout = await readWorkout(workoutId: workoutId);
+      final Result<WorkoutDbModel> updatedWorkout = await readWorkout(workoutId: workoutDbModel.workoutId!);
 
       return updatedWorkout;
     } catch (e, s) {

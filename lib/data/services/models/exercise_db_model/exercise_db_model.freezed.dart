@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ExerciseDbModel implements DiagnosticableTreeMixin {
 
- int get exerciseId; int get workoutId; String get exerciseName; int get series; int get repeats; double get weight;
+ int? get exerciseId; int get workoutId; String get exerciseName; int get series; int get repeats; double get weight;
 /// Create a copy of ExerciseDbModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -51,7 +51,7 @@ abstract mixin class $ExerciseDbModelCopyWith<$Res>  {
   factory $ExerciseDbModelCopyWith(ExerciseDbModel value, $Res Function(ExerciseDbModel) _then) = _$ExerciseDbModelCopyWithImpl;
 @useResult
 $Res call({
- int exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight
+ int? exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight
 });
 
 
@@ -68,10 +68,10 @@ class _$ExerciseDbModelCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseDbModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? exerciseId = null,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? exerciseId = freezed,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,}) {
   return _then(_self.copyWith(
-exerciseId: null == exerciseId ? _self.exerciseId : exerciseId // ignore: cast_nullable_to_non_nullable
-as int,workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
+exerciseId: freezed == exerciseId ? _self.exerciseId : exerciseId // ignore: cast_nullable_to_non_nullable
+as int?,workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
 as int,exerciseName: null == exerciseName ? _self.exerciseName : exerciseName // ignore: cast_nullable_to_non_nullable
 as String,series: null == series ? _self.series : series // ignore: cast_nullable_to_non_nullable
 as int,repeats: null == repeats ? _self.repeats : repeats // ignore: cast_nullable_to_non_nullable
@@ -161,7 +161,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ExerciseDBModel() when $default != null:
 return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight);case _:
@@ -182,7 +182,7 @@ return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight)  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseDBModel():
 return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight);case _:
@@ -202,7 +202,7 @@ return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight)?  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseDBModel() when $default != null:
 return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight);case _:
@@ -217,10 +217,10 @@ return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series
 
 
 class _ExerciseDBModel with DiagnosticableTreeMixin implements ExerciseDbModel {
-   _ExerciseDBModel({required this.exerciseId, required this.workoutId, required this.exerciseName, required this.series, required this.repeats, required this.weight});
+   _ExerciseDBModel({this.exerciseId, required this.workoutId, required this.exerciseName, required this.series, required this.repeats, required this.weight});
   
 
-@override final  int exerciseId;
+@override final  int? exerciseId;
 @override final  int workoutId;
 @override final  String exerciseName;
 @override final  int series;
@@ -263,7 +263,7 @@ abstract mixin class _$ExerciseDBModelCopyWith<$Res> implements $ExerciseDbModel
   factory _$ExerciseDBModelCopyWith(_ExerciseDBModel value, $Res Function(_ExerciseDBModel) _then) = __$ExerciseDBModelCopyWithImpl;
 @override @useResult
 $Res call({
- int exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight
+ int? exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight
 });
 
 
@@ -280,10 +280,10 @@ class __$ExerciseDBModelCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseDbModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? exerciseId = null,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? exerciseId = freezed,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,}) {
   return _then(_ExerciseDBModel(
-exerciseId: null == exerciseId ? _self.exerciseId : exerciseId // ignore: cast_nullable_to_non_nullable
-as int,workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
+exerciseId: freezed == exerciseId ? _self.exerciseId : exerciseId // ignore: cast_nullable_to_non_nullable
+as int?,workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
 as int,exerciseName: null == exerciseName ? _self.exerciseName : exerciseName // ignore: cast_nullable_to_non_nullable
 as String,series: null == series ? _self.series : series // ignore: cast_nullable_to_non_nullable
 as int,repeats: null == repeats ? _self.repeats : repeats // ignore: cast_nullable_to_non_nullable
