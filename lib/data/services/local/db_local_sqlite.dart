@@ -184,6 +184,42 @@ class DbLocalSqlite implements DataBaseLocalInterface {
     }
   }
 
+  @override
+  Future<List<ExerciseDbModel>> readExercisesByWorkout({
+    required int workoutId
+  }) async {
+    try {
+      final db = await database;
+
+      final List<Map<String, Object?>> result = await db.query(
+          _tblExercises,
+          where: 'workout_id = ?',
+          whereArgs: [workoutId]
+      );
+
+      final List<ExerciseDbModel> exercises = result.map((exercise) {
+        return ExerciseDbModel(
+            workoutId: workoutId,
+            exerciseName: exercise['exercise_name'] as String,
+            series: exercise['series'] as int,
+            repeats: exercise['repeats'] as int,
+            weight: (exercise['weight'] as num).toDouble()
+        );
+      }).toList();
+
+      return exercises;
+    } catch (e, s){
+      final String technical = '$e\n$s';
+
+      debugPrint(technical);
+
+      throw LocalStorageException(
+        message: 'Erro ao buscar exercícios do treino',
+        technicalMessage: technical,
+        code: 'SQLITE_READ_EXERCISES_BY_WORKOUT',
+      );
+    }
+  }
 
   @override
   Future<WorkoutDbModel> readWorkout({
