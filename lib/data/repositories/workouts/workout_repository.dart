@@ -1,5 +1,5 @@
 import 'package:meus_treinos/data/repositories/workouts/workout_repository_interface.dart';
-import 'package:meus_treinos/data/services/local/db_local_interface.dart';
+import 'package:meus_treinos/data/services/local/database_local_interface.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
 import 'package:meus_treinos/domain/models/workout/workout.dart';
 import 'package:result_dart/result_dart.dart';
