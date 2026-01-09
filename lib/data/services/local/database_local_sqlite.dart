@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:meus_treinos/data/services/local/db_local_interface.dart';
+import 'package:meus_treinos/data/services/local/database_local_interface.dart';
 import 'package:meus_treinos/data/services/models/exercise_db_model/exercise_db_model.dart';
 import 'package:meus_treinos/data/services/models/workout_db_model/workout_db_model.dart';
 import 'package:meus_treinos/utils/exceptions.dart';
