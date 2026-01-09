@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WorkoutDbModel implements DiagnosticableTreeMixin {
 
- int get workoutId; String get workoutName; int get weekday;
+ int? get workoutId; String get workoutName; int get weekday;
 /// Create a copy of WorkoutDbModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -51,7 +51,7 @@ abstract mixin class $WorkoutDbModelCopyWith<$Res>  {
   factory $WorkoutDbModelCopyWith(WorkoutDbModel value, $Res Function(WorkoutDbModel) _then) = _$WorkoutDbModelCopyWithImpl;
 @useResult
 $Res call({
- int workoutId, String workoutName, int weekday
+ int? workoutId, String workoutName, int weekday
 });
 
 
@@ -68,10 +68,10 @@ class _$WorkoutDbModelCopyWithImpl<$Res>
 
 /// Create a copy of WorkoutDbModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? workoutId = null,Object? workoutName = null,Object? weekday = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? workoutId = freezed,Object? workoutName = null,Object? weekday = null,}) {
   return _then(_self.copyWith(
-workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
-as int,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
+workoutId: freezed == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
+as int?,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
 as String,weekday: null == weekday ? _self.weekday : weekday // ignore: cast_nullable_to_non_nullable
 as int,
   ));
@@ -158,7 +158,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int workoutId,  String workoutName,  int weekday)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? workoutId,  String workoutName,  int weekday)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WorkoutDbModel() when $default != null:
 return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
@@ -179,7 +179,7 @@ return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int workoutId,  String workoutName,  int weekday)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? workoutId,  String workoutName,  int weekday)  $default,) {final _that = this;
 switch (_that) {
 case _WorkoutDbModel():
 return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
@@ -199,7 +199,7 @@ return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int workoutId,  String workoutName,  int weekday)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? workoutId,  String workoutName,  int weekday)?  $default,) {final _that = this;
 switch (_that) {
 case _WorkoutDbModel() when $default != null:
 return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
@@ -214,10 +214,10 @@ return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
 
 
 class _WorkoutDbModel with DiagnosticableTreeMixin implements WorkoutDbModel {
-   _WorkoutDbModel({required this.workoutId, required this.workoutName, required this.weekday});
+   _WorkoutDbModel({this.workoutId, required this.workoutName, required this.weekday});
   
 
-@override final  int workoutId;
+@override final  int? workoutId;
 @override final  String workoutName;
 @override final  int weekday;
 
@@ -257,7 +257,7 @@ abstract mixin class _$WorkoutDbModelCopyWith<$Res> implements $WorkoutDbModelCo
   factory _$WorkoutDbModelCopyWith(_WorkoutDbModel value, $Res Function(_WorkoutDbModel) _then) = __$WorkoutDbModelCopyWithImpl;
 @override @useResult
 $Res call({
- int workoutId, String workoutName, int weekday
+ int? workoutId, String workoutName, int weekday
 });
 
 
@@ -274,10 +274,10 @@ class __$WorkoutDbModelCopyWithImpl<$Res>
 
 /// Create a copy of WorkoutDbModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? workoutId = null,Object? workoutName = null,Object? weekday = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? workoutId = freezed,Object? workoutName = null,Object? weekday = null,}) {
   return _then(_WorkoutDbModel(
-workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
-as int,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
+workoutId: freezed == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
+as int?,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
 as String,weekday: null == weekday ? _self.weekday : weekday // ignore: cast_nullable_to_non_nullable
 as int,
   ));

@@ -2,7 +2,7 @@ import 'package:meus_treinos/data/services/models/exercise_db_model/exercise_db_
 import 'package:meus_treinos/data/services/models/workout_db_model/workout_db_model.dart';
 import 'package:result_dart/result_dart.dart';
 
-abstract interface class DataBaseLocal {
+abstract interface class DataBaseLocalInterface {
   // ---------- READ ----------
   Future<Result<List<WorkoutDbModel>>> readWorkouts();
   Future<Result<WorkoutDbModel>> readWorkout({required int workoutId});
@@ -11,31 +11,20 @@ abstract interface class DataBaseLocal {
 
   // ---------- CREATE ----------
   Future<Result<WorkoutDbModel>> createWorkout({
-    required String workoutName,
-    required int weekday,
+    required WorkoutDbModel workoutDbModel
   });
 
   Future<Result<ExerciseDbModel>> createExercise({
-    required int workoutId,
-    required String exerciseName,
-    required int series,
-    required int repeats,
-    required double weight
+    required ExerciseDbModel exerciseDbModel
   });
 
   // ---------- UPDATE ----------
   Future<Result<WorkoutDbModel>> updateWorkout({
-    required int workoutId,
-    required String workoutName,
-    required int weekday,
+    required WorkoutDbModel workoutDbModel
   });
 
   Future<Result<ExerciseDbModel>> updateExercise({
-    required int exerciseId,
-    required String exerciseName,
-    required int series,
-    required int repeats,
-    required double weight
+    required ExerciseDbModel exerciseDbModel
   });
 
 
