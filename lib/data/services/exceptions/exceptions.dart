@@ -6,6 +6,6 @@ abstract class AppGenericException implements Exception {
   AppGenericException({this.message = 'Generic Exception', required this.technicalMessage, this.code});
 }
 
-class LocalStorageException extends AppGenericException {
-  LocalStorageException({super.message = 'Local Storage Exception', required super.technicalMessage, super.code});
+class DataBaseLocalException extends AppGenericException {
+  DataBaseLocalException({super.message = 'Local Storage Exception', required super.technicalMessage, super.code});
 }
