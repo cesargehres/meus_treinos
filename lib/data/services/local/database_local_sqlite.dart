@@ -266,7 +266,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
   }
 
   @override
-  Future<WorkoutDbModel> readWorkoutByWeekday({
+  Future<WorkoutDbModel?> readWorkoutByWeekday({
     required int weekday
   }) async {
     try {
@@ -279,11 +279,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       );
 
       if (result.isEmpty) {
-        throw LocalStorageException(
-          message: 'Treino não encontrado',
-          technicalMessage: 'No workout found with weekday=$weekday',
-          code: 'SQLITE_WORKOUT_NOT_FOUND'
-        );
+        return null;
       }
 
       final Map<String, Object?> map = result.first;
