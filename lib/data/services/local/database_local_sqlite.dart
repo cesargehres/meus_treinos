@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:meus_treinos/data/services/local/database_local_interface.dart';
 import 'package:meus_treinos/data/services/models/exercise_db_model/exercise_db_model.dart';
 import 'package:meus_treinos/data/services/models/workout_db_model/workout_db_model.dart';
@@ -29,6 +28,9 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     return await openDatabase(
       path,
       version: _dbVersion,
+      onConfigure: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
       onCreate: _onCreate,
     );
   }
@@ -91,8 +93,6 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
       throw LocalStorageException(
         message: 'Erro ao criar o exercício',
         technicalMessage: technical,
@@ -126,8 +126,6 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       return workout;
     } catch (e, s) {
       final String technical = '$e\n$s';
-
-      debugPrint(technical);
 
       throw LocalStorageException(
         message: 'Erro ao criar o treino',
@@ -174,8 +172,6 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
       throw LocalStorageException(
         message: 'Erro ao buscar o exercício',
         technicalMessage: technical,
@@ -199,6 +195,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
 
       final List<ExerciseDbModel> exercises = result.map((exercise) {
         return ExerciseDbModel(
+            exerciseId: ['exercise_id'] as int,
             workoutId: workoutId,
             exerciseName: exercise['exercise_name'] as String,
             series: exercise['series'] as int,
@@ -210,8 +207,6 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       return exercises;
     } catch (e, s){
       final String technical = '$e\n$s';
-
-      debugPrint(technical);
 
       throw LocalStorageException(
         message: 'Erro ao buscar exercícios do treino',
@@ -255,8 +250,6 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
       throw LocalStorageException(
         message: 'Erro ao buscar treino',
         technicalMessage: technical,
@@ -294,8 +287,6 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
       throw LocalStorageException(
         message: 'Erro ao buscar treino',
         technicalMessage: technical,
@@ -325,8 +316,6 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       return workouts;
     } catch (e, s) {
       final String technical = '$e\n$s';
-
-      debugPrint(technical);
 
       throw LocalStorageException(
         message: 'Erro ao buscar treinos',
@@ -379,8 +368,6 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final technical = '$e\n$s';
 
-      debugPrint(technical);
-
       throw LocalStorageException(
         message: 'Erro ao atualizar o exercício',
         technicalMessage: technical,
@@ -430,8 +417,6 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
       throw LocalStorageException(
         message: 'Erro ao atualizar o treino',
         technicalMessage: technical,
@@ -460,8 +445,6 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       }
     } catch (e, s) {
       final technical = '$e\n$s';
-
-      debugPrint(technical);
 
       throw LocalStorageException(
         message: 'Erro ao deletar o exercício',
@@ -494,8 +477,6 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       }
     } catch (e, s) {
       final String technical = '$e\n$s';
-
-      debugPrint(technical);
 
       throw LocalStorageException(
         message: 'Erro ao deletar o treino',
