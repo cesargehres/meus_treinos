@@ -8,8 +8,8 @@ part 'workout.freezed.dart';
 abstract class Workout with _$Workout {
   factory Workout({
     int? workoutId,
-    required workoutName,
+    required String workoutName,
     required int weekday,
-    @Default([]) List<Exercise> exercises
+    @Default(<Exercise>[]) List<Exercise> exercises
   }) = _Workout;
 }
