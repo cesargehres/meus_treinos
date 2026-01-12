@@ -2,20 +2,23 @@ import 'package:flutter/foundation.dart';
 import 'package:meus_treinos/data/repositories/workouts/workout_repository_interface.dart';
 import 'package:meus_treinos/data/services/local/database_local_interface.dart';
 import 'package:meus_treinos/data/services/models/exercise_db_model/exercise_db_model.dart';
+import 'package:meus_treinos/data/services/models/workout_db_model/workout_db_model.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
 import 'package:meus_treinos/domain/models/workout/workout.dart';
-import 'package:meus_treinos/utils/exceptions.dart';
+import 'package:meus_treinos/data/services/exceptions/exceptions.dart';
 import 'package:result_dart/result_dart.dart';
 
 class WorkoutRepository implements WorkoutRepositoryInterface {
-  final DataBaseLocalInterface dataBaseLocal;
+  final DataBaseLocalInterface _dataBaseLocal;
 
-  WorkoutRepository({required this.dataBaseLocal});
+  WorkoutRepository({
+    required dataBaseLocal
+  }) : _dataBaseLocal = dataBaseLocal;
 
   @override
   Future<Result<Exercise>> createExercise({required Exercise exercise}) async {
     try {
-      final ExerciseDbModel dbModel = await dataBaseLocal.createExercise(
+      final ExerciseDbModel result = await _dataBaseLocal.createExercise(
         exerciseDbModel: ExerciseDbModel(
           workoutId: exercise.workoutId,
           exerciseName: exercise.exerciseName,
@@ -27,27 +30,55 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
 
       return Success(
         Exercise(
-          exerciseId: dbModel.exerciseId,
-          workoutId: dbModel.workoutId,
-          exerciseName: dbModel.exerciseName,
-          series: dbModel.series,
-          repeats: dbModel.repeats,
-          weight: dbModel.weight,
+          exerciseId: result.exerciseId,
+          workoutId: result.workoutId,
+          exerciseName: result.exerciseName,
+          series: result.series,
+          repeats: result.repeats,
+          weight: result.weight,
         ),
       );
-    } on LocalStorageException catch (e) {
+    } on DataBaseLocalException catch (e) {
+      debugPrint('[${e.code}] ${e.message}');
       debugPrint(e.technicalMessage);
 
-      return const Failure(CreateExerciseFailure());
-    } catch (_) {
-      return const Failure(CreateExerciseFailure());
+      return Failure(e);
+    } catch (e) {
+      debugPrint(e.toString());
+      return Failure(
+        Exception('Houve um erro inesperado!')
+      );
     }
   }
 
   @override
-  Future<Result<Workout>> createWorkout({required Workout workout}) {
-    // TODO: implement createWorkout
-    throw UnimplementedError();
+  Future<Result<Workout>> createWorkout({required Workout workout}) async {
+    try {
+      final WorkoutDbModel result = await _dataBaseLocal.createWorkout(workoutDbModel: WorkoutDbModel(
+        workoutName: workout.workoutName,
+        weekday: workout.weekday,
+      ));
+
+      final Workout resultWorkout = Workout(
+        workoutId: result.workoutId,
+        workoutName: result.workoutName,
+        weekday: result.weekday,
+        exercises: <Exercise>[]
+      );
+
+      return Success(resultWorkout);
+    } on DataBaseLocalException catch (e) {
+      debugPrint('[${e.code}] ${e.message}');
+      debugPrint(e.technicalMessage);
+
+      return Failure(e);
+    } catch (e) {
+      debugPrint(e.toString());
+
+      return Failure(
+        Exception('Houve um erro inesperado!')
+      );
+    }
   }
 
   @override
@@ -57,9 +88,32 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
   }
 
   @override
-  Future<Result<List<Workout>>> getWorkouts() {
-    // TODO: implement getWorkouts
-    throw UnimplementedError();
+  Future<Result<List<Workout>>> getWorkouts() async {
+    try {
+      final List<WorkoutDbModel> result = await _dataBaseLocal.readWorkouts();
+
+      final List<Workout> workouts = result.map((workoutDbModel) {
+        return Workout(
+          workoutId: workoutDbModel.workoutId,
+          workoutName: workoutDbModel.workoutName,
+          weekday: workoutDbModel.weekday,
+          exercises: <Exercise>[]
+        );
+      }).toList();
+
+      return Success(workouts);
+    } on DataBaseLocalException catch (e) {
+      debugPrint('[${e.code}] ${e.message}');
+      debugPrint(e.technicalMessage);
+
+      return Failure(e);
+    } catch (e) {
+      debugPrint(e.toString());
+
+      return Failure(
+        Exception('Houve um erro inesperado!')
+      );
+    }
   }
 
 }

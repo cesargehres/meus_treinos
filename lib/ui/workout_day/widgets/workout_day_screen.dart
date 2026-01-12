@@ -35,11 +35,15 @@ class WorkoutDayScreen extends StatelessWidget {
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                'Treino 1',
-                                style: TextStyle(
-                                    fontSize: fontSize
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Treino 1',
+                                    style: TextStyle(
+                                        fontSize: fontSize
+                                    ),
+                                  ),
+                                ]
                               )
                             ],
                           ),

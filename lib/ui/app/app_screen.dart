@@ -16,7 +16,7 @@ class AppScreen extends StatelessWidget {
       title: 'Meus Treinos',
         theme: ThemeData(
           primarySwatch: Colors.purple,
-          useMaterial3: false,
+          useMaterial3: true,
         ),
       routerConfig: _router
     );
