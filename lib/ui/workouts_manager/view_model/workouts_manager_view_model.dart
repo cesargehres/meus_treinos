@@ -25,17 +25,19 @@ class WorkoutsManagerViewModel extends ChangeNotifier {
 
         if (workouts.length < 7) {
           for (int c = 1; c <= 7; c++) {
-            await _workoutRepository.createWorkout(workout: Workout(
-              workoutName: 'Treino $c', weekday: c
-            ));
+            await _workoutRepository.createWorkout(
+              workout: Workout(
+                workoutName: 'Treino $c', weekday: c
+              )
+            );
           }
+
+          result = await _workoutRepository.getWorkouts();
+
+          result.onSuccess((success) {
+            _workouts = success;
+          });
         }
-
-        result = await _workoutRepository.getWorkouts();
-
-        result.onSuccess((success) {
-          _workouts = success;
-        });
 
         notifyListeners();
         return Success(unit);

@@ -32,7 +32,9 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(title)),
-      body: child,
+      body: SafeArea(
+        child: child
+      ),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).colorScheme.primary,
         currentIndex: currentIndex,

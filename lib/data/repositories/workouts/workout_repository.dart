@@ -92,7 +92,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     try {
       final List<WorkoutDbModel> result = await _dataBaseLocal.readWorkouts();
 
-      final List<Workout> workouts = result.map((workoutDbModel) {
+      List<Workout> workouts = result.map((workoutDbModel) {
         return Workout(
           workoutId: workoutDbModel.workoutId,
           workoutName: workoutDbModel.workoutName,
@@ -100,6 +100,25 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
           exercises: <Exercise>[]
         );
       }).toList();
+
+      for (int c = 0; c < workouts.length; c++) {
+        final List<ExerciseDbModel> resultExercisesDbModel = await _dataBaseLocal.readExercisesByWorkout(workoutId: workouts[c].workoutId!);
+
+        final List<Exercise> exercises = resultExercisesDbModel.map((exerciseDbModel) {
+          return Exercise(
+            exerciseId: exerciseDbModel.exerciseId,
+            workoutId: exerciseDbModel.workoutId,
+            exerciseName: exerciseDbModel.exerciseName,
+            series: exerciseDbModel.series,
+            repeats: exerciseDbModel.repeats,
+            weight: exerciseDbModel.weight
+          );
+        }).toList();
+
+        workouts[c] = workouts[c].copyWith(
+          exercises: exercises
+        );
+      }
 
       return Success(workouts);
     } on DataBaseLocalException catch (e) {
