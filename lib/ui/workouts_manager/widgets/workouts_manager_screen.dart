@@ -29,8 +29,6 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Color textColor = Theme.of(context).colorScheme.onPrimary;
-
     return ListenableBuilder(
       listenable: widget.viewModel,
       builder: (context, child) {
@@ -42,82 +40,58 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
           return const Center(child: Text('Nenhum treino disponível'));
         }
 
-        return Scaffold(
-          body: SizedBox.expand(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 72),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    for (Workout workout in widget.viewModel.workouts) ...[
-                      GestureDetector(
-                        onTap: () => {
-                          context.go(
-                            '/workoutsManager/details/${workout.workoutId}',
-                            extra: workout
-                          )
-                        },
-                        child: Container(
-                          height: 60,
-                          width: double.infinity,
-                          color: Theme.of(context).colorScheme.primary,
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children:  [
-                                Text(
-                                  workout.workoutName,
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    color: Theme.of(context).colorScheme.onPrimary,
-                                  ),
+        return SizedBox.expand(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (Workout workout in widget.viewModel.workouts) ...[
+                    GestureDetector(
+                      onTap: () => {
+                        context.go(
+                          '/workoutsManager/details/${workout.workoutId}',
+                          extra: workout
+                        )
+                      },
+                      child: Container(
+                        height: 60,
+                        width: double.infinity,
+                        color: Theme.of(context).colorScheme.primary,
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children:  [
+                              Text(
+                                workout.workoutName,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
-                                Text(
-                                  switch (workout.weekday) {
-                                    1 => 'Dom',
-                                    2 => 'Seg',
-                                    3 => 'Ter',
-                                    4 => 'Qua',
-                                    5 => 'Qui',
-                                    6 => 'Sex',
-                                    _ => 'Sáb'
-                                  },
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.primaryContainer
-                                  ),
-                                )
-                              ]
-                            ),
+                              ),
+                              Text(
+                                switch (workout.weekday) {
+                                  1 => 'Dom',
+                                  2 => 'Seg',
+                                  3 => 'Ter',
+                                  4 => 'Qua',
+                                  5 => 'Qui',
+                                  6 => 'Sex',
+                                  _ => 'Sáb'
+                                },
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primaryContainer
+                                ),
+                              )
+                            ]
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
-                    ],
+                    ),
+                    const SizedBox(height: 16),
                   ],
-                ),
-              ),
-            ),
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: Transform.translate(
-            offset: const Offset(0, 8),
-            child: FloatingActionButton.extended(
-              onPressed: () {},
-              tooltip: "Adicionar exercício",
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              label: Row(
-                spacing: 8,
-                children: [
-                  Text(
-                    'Adicionar exercício',
-                    style: TextStyle(color: textColor),
-                  ),
-                  Icon(
-                    Icons.add,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  )
                 ],
               ),
             ),

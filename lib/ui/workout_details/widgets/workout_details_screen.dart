@@ -163,14 +163,55 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
             offset: const Offset(0, 8),
             child: FloatingActionButton.extended(
               onPressed: () {
-                widget.viewModel.createExercise.execute(
-                  Exercise(
-                    workoutId: widget.viewModel.workout!.workoutId!,
-                    exerciseName: 'a',
-                    series: 3,
-                    repeats: 10,
-                    weight: 20
-                  )
+                Scaffold.of(context).showBottomSheet(
+                  (context) {
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            const TextField (
+                              decoration: InputDecoration(labelText: 'Nome do exercício'),
+                            ),
+                            TextField(
+                              decoration: const InputDecoration(labelText: 'Séries'),
+                              keyboardType: TextInputType.number,
+                            ),
+                            TextField(
+                              decoration: const InputDecoration(labelText: 'Repetições'),
+                              keyboardType: TextInputType.number,
+                            ),
+                            TextField(
+                              decoration: const InputDecoration(labelText: 'Peso'),
+                              keyboardType: TextInputType.number,
+                            ),
+                            SizedBox(height: 16),
+                            Wrap(
+                              direction: Axis.horizontal,
+                              spacing: 16,
+                              runSpacing: 8,
+                              children: [
+                                SizedBox(
+                                  width: 120,
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    child: Text('Salvar')
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 120,
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    child: Text('Cancelar')
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }
                 );
               },
               tooltip: "Adicionar exercício",
