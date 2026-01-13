@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:meus_treinos/domain/models/workout/workout.dart';
 import 'package:meus_treinos/ui/workouts_manager/view_model/workouts_manager_view_model.dart';
 
 class WorkoutsManagerScreen extends StatefulWidget {
@@ -28,10 +29,10 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: widget.viewModel.getAllWorkouts,
-      builder: (context, value, child) {
-        if (value.isRunning) {
+    return ListenableBuilder(
+      listenable: widget.viewModel,
+      builder: (context, child) {
+        if (widget.viewModel.getAllWorkouts.value.isRunning) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -45,7 +46,7 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  for (var workout in widget.viewModel.workouts) ...[
+                  for (Workout workout in widget.viewModel.workouts) ...[
                     GestureDetector(
                       onTap: () => {
                         context.go(
