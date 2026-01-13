@@ -5,7 +5,6 @@ import 'package:meus_treinos/data/services/local/database_local_sqlite.dart';
 import 'package:meus_treinos/ui/app/app_screen.dart';
 import 'package:meus_treinos/ui/workouts_manager/view_model/workouts_manager_view_model.dart';
 import 'package:meus_treinos/ui/workout_day/view_model/workout_day_view_model.dart';
-import 'package:meus_treinos/ui/workouts_manager/widgets/workout_details/view_model/workout_details_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
-import 'package:meus_treinos/ui/workouts_manager/widgets/workout_details/view_model/workout_details_view_model.dart';
+import 'package:meus_treinos/ui/workout_details/view_model/workout_details_view_model.dart';
 
 class WorkoutDetailsScreen extends StatefulWidget {
   final WorkoutDetailsViewModel viewModel;
