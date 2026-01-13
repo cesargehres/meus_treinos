@@ -195,7 +195,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
 
       final List<ExerciseDbModel> exercises = result.map((exercise) {
         return ExerciseDbModel(
-            exerciseId: ['exercise_id'] as int,
+            exerciseId: exercise['exercise_id'] as int,
             workoutId: workoutId,
             exerciseName: exercise['exercise_name'] as String,
             series: exercise['series'] as int,
