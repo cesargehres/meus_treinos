@@ -31,7 +31,10 @@ class ScaffoldWithNavBar extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        title: Text(title),
+        automaticallyImplyLeading: false,
+      ),
       body: SafeArea(
         child: child
       ),
