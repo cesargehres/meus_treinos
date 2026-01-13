@@ -27,7 +27,7 @@ class WorkoutsManagerViewModel extends ChangeNotifier {
           for (int c = 1; c <= 7; c++) {
             await _workoutRepository.createWorkout(
               workout: Workout(
-                workoutName: 'Treino $c', weekday: c
+                workoutName: 'Sem Treino', weekday: c
               )
             );
           }
