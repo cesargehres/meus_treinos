@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
 import 'package:meus_treinos/ui/workout_details/view_model/workout_details_view_model.dart';
+import 'package:meus_treinos/ui/workout_details/widgets/exercise_edit_widget.dart';
 
 class WorkoutDetailsScreen extends StatefulWidget {
   final WorkoutDetailsViewModel viewModel;
@@ -15,6 +16,8 @@ class WorkoutDetailsScreen extends StatefulWidget {
 }
 
 class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
+  bool _modalOpen = false;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -34,7 +37,12 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
         return Scaffold(
           body: SizedBox.expand(
             child: Padding(
-              padding: const EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 72),
+              padding: EdgeInsets.only(
+                left: 8,
+                top: 8,
+                right: 8,
+                bottom: MediaQuery.of(context).size.height * (!_modalOpen ? 0.1 : 0.42)
+              ),
               child: SingleChildScrollView(
                 child: Column(
                   spacing: 8,
@@ -163,56 +171,24 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
             offset: const Offset(0, 8),
             child: FloatingActionButton.extended(
               onPressed: () {
+                setState(() {
+                  _modalOpen = true;
+                });
+
                 Scaffold.of(context).showBottomSheet(
-                  (context) {
-                    return SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Column(
-                          children: [
-                            const TextField (
-                              decoration: InputDecoration(labelText: 'Nome do exercício'),
-                            ),
-                            TextField(
-                              decoration: const InputDecoration(labelText: 'Séries'),
-                              keyboardType: TextInputType.number,
-                            ),
-                            TextField(
-                              decoration: const InputDecoration(labelText: 'Repetições'),
-                              keyboardType: TextInputType.number,
-                            ),
-                            TextField(
-                              decoration: const InputDecoration(labelText: 'Peso'),
-                              keyboardType: TextInputType.number,
-                            ),
-                            SizedBox(height: 16),
-                            Wrap(
-                              direction: Axis.horizontal,
-                              spacing: 16,
-                              runSpacing: 8,
-                              children: [
-                                SizedBox(
-                                  width: 120,
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    child: Text('Salvar')
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 120,
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    child: Text('Cancelar')
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                );
+                  (context) => ExerciseEditWidget(
+                    exercise: Exercise(
+                      workoutId: widget.viewModel.workout!.workoutId!,
+                      exerciseName: 'Exercício',
+                      series: 3,
+                      repeats: 12,
+                      weight: 20
+                    ),
+                    onSave: widget.viewModel.createExercise,
+                  )
+                ).closed.then((_) {
+                  setState(() => _modalOpen = false);
+                });
               },
               tooltip: "Adicionar exercício",
               backgroundColor: Theme.of(context).colorScheme.primary,
