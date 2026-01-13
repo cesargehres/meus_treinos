@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:meus_treinos/ui/workouts_manager/view_model/workouts_manager_view_model.dart';
 
 class WorkoutsManagerScreen extends StatefulWidget {
@@ -45,38 +46,46 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
               child: Column(
                 children: [
                   for (var workout in widget.viewModel.workouts) ...[
-                    Container(
-                      height: 60,
-                      width: double.infinity,
-                      color: Theme.of(context).colorScheme.primary,
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children:  [
-                            Text(
-                              workout.workoutName,
-                              style: TextStyle(
-                                fontSize: 24,
-                                color: Theme.of(context).colorScheme.onPrimary,
+                    GestureDetector(
+                      onTap: () => {
+                        context.go(
+                          '/workoutsManager/details/${workout.workoutId}',
+                          extra: workout
+                        )
+                      },
+                      child: Container(
+                        height: 60,
+                        width: double.infinity,
+                        color: Theme.of(context).colorScheme.primary,
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children:  [
+                              Text(
+                                workout.workoutName,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                ),
                               ),
-                            ),
-                            Text(
-                              switch (workout.weekday) {
-                                1 => 'Dom',
-                                2 => 'Seg',
-                                3 => 'Ter',
-                                4 => 'Qua',
-                                5 => 'Qui',
-                                6 => 'Sex',
-                                _ => 'Sáb'
-                              },
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primaryContainer
-                              ),
-                            )
-                          ]
+                              Text(
+                                switch (workout.weekday) {
+                                  1 => 'Dom',
+                                  2 => 'Seg',
+                                  3 => 'Ter',
+                                  4 => 'Qua',
+                                  5 => 'Qui',
+                                  6 => 'Sex',
+                                  _ => 'Sáb'
+                                },
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primaryContainer
+                                ),
+                              )
+                            ]
+                          ),
                         ),
                       ),
                     ),

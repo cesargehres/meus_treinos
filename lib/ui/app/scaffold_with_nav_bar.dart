@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:meus_treinos/domain/models/workout/workout.dart';
 
 class ScaffoldWithNavBar extends StatelessWidget {
   final Widget child;
@@ -18,7 +19,11 @@ class ScaffoldWithNavBar extends StatelessWidget {
       currentIndex = 1;
 
     } else if (path == '/workoutsManager') {
-      title = 'Gerenciador de Treinos';
+      title = 'Meus Treinos';
+      currentIndex = 0;
+    } else if (path.startsWith('/workoutsManager/detail') && state.extra != null) {
+      final workout = state.extra as Workout;
+      title = workout.workoutName;
       currentIndex = 0;
     } else {
       title = 'Meu App';
@@ -29,7 +34,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
       appBar: AppBar(title: Text(title)),
       body: child,
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.purple,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
         currentIndex: currentIndex,
         onTap: (index) {
           switch (index) {
