@@ -135,4 +135,42 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     }
   }
 
+  @override
+  Future<Result<Exercise>> updateExercise({required Exercise exercise}) async {
+    try {
+      final ExerciseDbModel exerciseDbModel = await _dataBaseLocal.updateExercise(
+        exerciseDbModel: ExerciseDbModel(
+          exerciseId: exercise.exerciseId,
+          workoutId: exercise.workoutId,
+          exerciseName: exercise.exerciseName,
+          series: exercise.series,
+          repeats: exercise.repeats,
+          weight: exercise.weight
+        )
+      );
+
+      final Exercise updatedExercise = Exercise(
+        exerciseId: exerciseDbModel.exerciseId,
+        workoutId: exerciseDbModel.workoutId,
+        exerciseName: exerciseDbModel.exerciseName,
+        series: exerciseDbModel.series,
+        repeats: exerciseDbModel.repeats,
+        weight: exerciseDbModel.weight
+      );
+
+      return Success(updatedExercise);
+    } on DataBaseLocalException catch (e) {
+      debugPrint('[${e.code}] ${e.message}');
+      debugPrint(e.technicalMessage);
+
+      return Failure(e);
+    } catch (e) {
+      debugPrint(e.toString());
+
+      return Failure(
+        Exception('Houve um erro inesperado!')
+      );
+    }
+  }
+
 }

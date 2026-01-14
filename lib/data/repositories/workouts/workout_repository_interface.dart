@@ -7,4 +7,5 @@ abstract interface class WorkoutRepositoryInterface {
   Future<Result<Workout>> getWorkoutByWeekday({required int weekday});
   Future<Result<Workout>> createWorkout({required Workout workout});
   Future<Result<Exercise>> createExercise({required Exercise exercise});
+  Future<Result<Exercise>> updateExercise({required Exercise exercise});
 }

@@ -52,11 +52,15 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
                   children: [
                     for (Workout workout in widget.viewModel.workouts) ...[
                       GestureDetector(
-                        onTap: () => {
-                          context.go(
+                        onTap: () async {
+                          final Workout? updated = await context.push(
                             '/workoutsManager/details/${workout.workoutId}',
                             extra: workout
-                          )
+                          );
+
+                          if (updated is Workout) {
+                            widget.viewModel.replaceWorkout.execute(updated);
+                          }
                         },
                         child: Container(
                           height: 60,

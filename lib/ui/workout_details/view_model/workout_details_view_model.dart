@@ -10,6 +10,7 @@ class WorkoutDetailsViewModel extends ChangeNotifier {
   Workout? workout;
 
   late final Command1<Unit, Exercise> createExercise;
+  late final Command1<Unit, Exercise> updateExercise;
 
   WorkoutDetailsViewModel({
     required WorkoutRepository workoutRepository,
@@ -17,9 +18,7 @@ class WorkoutDetailsViewModel extends ChangeNotifier {
   }) : _workoutRepository = workoutRepository {
     createExercise = Command1<Unit, Exercise>(
       (Exercise exercise) async {
-        var result = await _workoutRepository.createExercise(
-          exercise: exercise
-        );
+        var result = await _workoutRepository.createExercise(exercise: exercise);
 
         result.onSuccess((success) {
           workout = workout!.copyWith(
@@ -32,6 +31,32 @@ class WorkoutDetailsViewModel extends ChangeNotifier {
 
         notifyListeners();
         return Success(unit);
-      });
+      }
+    );
+
+    updateExercise = Command1<Unit, Exercise>(
+      (Exercise exercise) async {
+        var result = await _workoutRepository.updateExercise(exercise: exercise);
+
+        result.onSuccess((success) {
+          List<Exercise> oldExercises = List.from(workout!.exercises);
+
+          final List<Exercise> updatedExercises = oldExercises.map((exerciseInWorkout) {
+            if (exerciseInWorkout.exerciseId == exercise.exerciseId) {
+              return success;
+            } else {
+              return exerciseInWorkout;
+            }
+          }).toList();
+
+          workout = workout!.copyWith(
+            exercises: updatedExercises
+          );
+        });
+
+        notifyListeners();
+        return Success(unit);
+      }
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
 import 'package:meus_treinos/ui/workout_details/view_model/workout_details_view_model.dart';
 import 'package:meus_treinos/ui/workout_details/widgets/exercise_edit_widget.dart';
@@ -36,6 +37,12 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                context.pop(widget.viewModel.workout);
+              },
+            ),
             title: Text(widget.viewModel.workout!.workoutName)
           ),
           body: SizedBox.expand(
@@ -144,10 +151,10 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                                     setState(() {_modalOpen = true;});
 
                                     Scaffold.of(context).showBottomSheet(
-                                      // TODO: Colocar o command de update no lugar de create
+                                      enableDrag: !widget.viewModel.updateExercise.value.isRunning,
                                       (context) => ExerciseEditWidget(
-                                        exercise: exercise,
-                                        onSave: widget.viewModel.createExercise,
+                                      exercise: exercise,
+                                      onSave: widget.viewModel.updateExercise,
                                       )
                                     ).closed.then((_) {
                                       setState(() {_modalOpen = false;});
