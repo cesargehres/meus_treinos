@@ -12,29 +12,18 @@ class ScaffoldWithNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final path = state.uri.path;
 
-    String title;
     int currentIndex;
     if (path == '/') {
-      title = 'Treino do Dia';
       currentIndex = 1;
-
     } else if (path == '/workoutsManager') {
-      title = 'Meus Treinos';
       currentIndex = 0;
-    } else if (path.startsWith('/workoutsManager/detail') && state.extra != null) {
-      final workout = state.extra as Workout;
-      title = workout.workoutName;
+    } else if (path.startsWith('/workoutsManager/detail')) {
       currentIndex = 0;
     } else {
-      title = 'Meu App';
       currentIndex = 0;
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        automaticallyImplyLeading: false,
-      ),
       body: SafeArea(
         child: child
       ),

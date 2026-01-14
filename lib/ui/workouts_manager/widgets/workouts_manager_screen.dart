@@ -40,59 +40,64 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
           return const Center(child: Text('Nenhum treino disponível'));
         }
 
-        return SizedBox.expand(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  for (Workout workout in widget.viewModel.workouts) ...[
-                    GestureDetector(
-                      onTap: () => {
-                        context.go(
-                          '/workoutsManager/details/${workout.workoutId}',
-                          extra: workout
-                        )
-                      },
-                      child: Container(
-                        height: 60,
-                        width: double.infinity,
-                        color: Theme.of(context).colorScheme.primary,
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children:  [
-                              Text(
-                                workout.workoutName,
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  color: Theme.of(context).colorScheme.onPrimary,
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Meus Treinos'),
+          ),
+          body: SizedBox.expand(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    for (Workout workout in widget.viewModel.workouts) ...[
+                      GestureDetector(
+                        onTap: () => {
+                          context.go(
+                            '/workoutsManager/details/${workout.workoutId}',
+                            extra: workout
+                          )
+                        },
+                        child: Container(
+                          height: 60,
+                          width: double.infinity,
+                          color: Theme.of(context).colorScheme.primary,
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children:  [
+                                Text(
+                                  workout.workoutName,
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    color: Theme.of(context).colorScheme.onPrimary,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                switch (workout.weekday) {
-                                  1 => 'Dom',
-                                  2 => 'Seg',
-                                  3 => 'Ter',
-                                  4 => 'Qua',
-                                  5 => 'Qui',
-                                  6 => 'Sex',
-                                  _ => 'Sáb'
-                                },
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.primaryContainer
-                                ),
-                              )
-                            ]
+                                Text(
+                                  switch (workout.weekday) {
+                                    1 => 'Dom',
+                                    2 => 'Seg',
+                                    3 => 'Ter',
+                                    4 => 'Qua',
+                                    5 => 'Qui',
+                                    6 => 'Sex',
+                                    _ => 'Sáb'
+                                  },
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.primaryContainer
+                                  ),
+                                )
+                              ]
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
+                      const SizedBox(height: 16),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),
