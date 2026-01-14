@@ -25,12 +25,12 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
 
   @override
   void initState() {
+    super.initState();
+
     _exerciseWeightController.text = widget.exercise.exerciseName;
     _exerciseSeriesController.text = widget.exercise.series.toString();
     _exerciseRepeatsController.text = widget.exercise.repeats.toString();
     _exerciseWeightController.text = widget.exercise.weight.toString();
-
-    super.initState();
   }
 
   @override
@@ -44,65 +44,84 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField (
-              decoration: InputDecoration(labelText: 'Nome do exercício'),
-              controller: _exerciseNameController,
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Séries'),
-              keyboardType: TextInputType.number,
-              controller: _exerciseSeriesController,
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Repetições'),
-              keyboardType: TextInputType.number,
-              controller: _exerciseRepeatsController,
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Peso'),
-              keyboardType: TextInputType.number,
-              controller: _exerciseWeightController,
-            ),
-            SizedBox(height: 16),
-            Wrap(
-              direction: Axis.horizontal,
-              spacing: 16,
-              runSpacing: 8,
+    return ListenableBuilder(
+      listenable: widget.onSave,
+      builder: (context, state) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
               children: [
-                SizedBox(
-                  width: 120,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      widget.onSave.execute(
-                        Exercise(
-                          exerciseId: widget.exercise.exerciseId,
-                          workoutId: widget.exercise.workoutId,
-                          exerciseName: _exerciseNameController.text,
-                          series: int.parse(_exerciseSeriesController.text),
-                          repeats: int.parse(_exerciseRepeatsController.text),
-                          weight: double.parse(_exerciseWeightController.text))
-                      );
-                    },
-                    child: Text('Salvar')
-                  ),
+                TextField (
+                  decoration: InputDecoration(labelText: 'Nome do exercício'),
+                  controller: _exerciseNameController,
                 ),
-                SizedBox(
-                  width: 120,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text('Cancelar')
-                  ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Séries'),
+                  keyboardType: TextInputType.number,
+                  controller: _exerciseSeriesController,
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Repetições'),
+                  keyboardType: TextInputType.number,
+                  controller: _exerciseRepeatsController,
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Peso'),
+                  keyboardType: TextInputType.number,
+                  controller: _exerciseWeightController,
+                ),
+                SizedBox(height: 16),
+                Wrap(
+                  direction: Axis.horizontal,
+                  spacing: 16,
+                  runSpacing: 8,
+                  children: [
+                    SizedBox(
+                      width: 120,
+                      height: 40,
+                      child: widget.onSave.value.isRunning
+                        ? CircularProgressIndicator(
+                          padding: EdgeInsets.symmetric(horizontal: 40)
+                        )
+                        : ElevatedButton(
+                        onPressed: () async {
+                          await widget.onSave.execute(
+                            Exercise(
+                              exerciseId: widget.exercise.exerciseId,
+                              workoutId: widget.exercise.workoutId,
+                              exerciseName: _exerciseNameController.text,
+                              series: int.parse(_exerciseSeriesController.text),
+                              repeats: int.parse(_exerciseRepeatsController.text),
+                              weight: double.parse(_exerciseWeightController.text),
+                            )
+                          );
+
+                          if ( widget.onSave.value.isSuccess) {
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: Text('Salvar')
+                      )
+                    ),
+                    SizedBox(
+                      width: 120,
+                      child: ElevatedButton(
+                        onPressed: widget.onSave.value.isRunning
+                          ? null
+                          : () {
+                            Navigator.of(context).pop();
+                          },
+                        child: Text('Cancelar')
+                      ),
+                    )
+                  ],
                 )
               ],
-            )
-          ],
-        ),
-      ),
+            ),
+          ),
+        );
+      }
     );
   }
 }

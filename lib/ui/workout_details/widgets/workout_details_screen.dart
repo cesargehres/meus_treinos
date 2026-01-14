@@ -33,7 +33,7 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
 
     return ListenableBuilder(
       listenable: widget.viewModel,
-      builder: (context, child) {
+      builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             title: Text(widget.viewModel.workout!.workoutName)
@@ -177,8 +177,8 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                 setState(() {
                   _modalOpen = true;
                 });
-
                 Scaffold.of(context).showBottomSheet(
+                  enableDrag: !widget.viewModel.createExercise.value.isRunning,
                   (context) => ExerciseEditWidget(
                     exercise: Exercise(
                       workoutId: widget.viewModel.workout!.workoutId!,

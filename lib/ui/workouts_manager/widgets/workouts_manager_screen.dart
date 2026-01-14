@@ -31,7 +31,7 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: widget.viewModel,
-      builder: (context, child) {
+      builder: (context, state) {
         if (widget.viewModel.getAllWorkouts.value.isRunning) {
           return const Center(child: CircularProgressIndicator());
         }
