@@ -16,43 +16,48 @@ class WorkoutDayScreen extends StatelessWidget {
     return ListenableBuilder(
       listenable: viewModel,
       builder: (context, state) {
-        return SizedBox.expand(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: Column(
-                spacing: 16,
-                children: [
-                  Container(
-                    height: 100,
-                    width: double.infinity,
-                    color: Colors.purpleAccent,
-                    child: Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Treino 1',
-                                    style: TextStyle(
-                                        fontSize: fontSize
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Treino do Dia'),
+          ),
+          body: SizedBox.expand(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  spacing: 16,
+                  children: [
+                    Container(
+                      height: 100,
+                      width: double.infinity,
+                      color: Colors.purpleAccent,
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Treino 1',
+                                      style: TextStyle(
+                                          fontSize: fontSize
+                                      ),
                                     ),
-                                  ),
-                                ]
-                              )
-                            ],
-                          ),
-                          Checkbox(value: false, onChanged: (value) => {})
-                        ],
+                                  ]
+                                )
+                              ],
+                            ),
+                            Checkbox(value: false, onChanged: (value) => {})
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

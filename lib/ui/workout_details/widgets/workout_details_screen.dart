@@ -35,6 +35,9 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
       listenable: widget.viewModel,
       builder: (context, child) {
         return Scaffold(
+          appBar: AppBar(
+            title: Text(widget.viewModel.workout!.workoutName)
+          ),
           body: SizedBox.expand(
             child: Padding(
               padding: EdgeInsets.only(
