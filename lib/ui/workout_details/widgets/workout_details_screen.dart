@@ -140,7 +140,19 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                                       Theme.of(context).colorScheme.onPrimary,
                                     ),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    setState(() {_modalOpen = true;});
+
+                                    Scaffold.of(context).showBottomSheet(
+                                      // TODO: Colocar o command de update no lugar de create
+                                      (context) => ExerciseEditWidget(
+                                        exercise: exercise,
+                                        onSave: widget.viewModel.createExercise,
+                                      )
+                                    ).closed.then((_) {
+                                      setState(() {_modalOpen = false;});
+                                    });
+                                  },
                                   icon: Icon(
                                     Icons.edit,
                                     color: Theme.of(context).colorScheme.primary,
@@ -182,7 +194,7 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                   (context) => ExerciseEditWidget(
                     exercise: Exercise(
                       workoutId: widget.viewModel.workout!.workoutId!,
-                      exerciseName: 'Exercício',
+                      exerciseName: '',
                       series: 3,
                       repeats: 12,
                       weight: 20

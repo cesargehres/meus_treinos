@@ -27,7 +27,7 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
   void initState() {
     super.initState();
 
-    _exerciseWeightController.text = widget.exercise.exerciseName;
+    _exerciseNameController.text = widget.exercise.exerciseName.toString();
     _exerciseSeriesController.text = widget.exercise.series.toString();
     _exerciseRepeatsController.text = widget.exercise.repeats.toString();
     _exerciseWeightController.text = widget.exercise.weight.toString();
