@@ -173,4 +173,22 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     }
   }
 
+  @override
+  Future<Result<Unit>> deleteExercise({required idExercise}) async {
+    try {
+      await _dataBaseLocal.deleteExercise(exerciseId: idExercise);
+
+      return Success(unit);
+    } on DataBaseLocalException catch (e) {
+      debugPrint('[${e.code}] ${e.message}');
+      debugPrint(e.technicalMessage);
+
+      return Failure(e);
+    } catch (e) {
+      return Failure(
+        Exception(e)
+      );
+    }
+  }
+
 }
