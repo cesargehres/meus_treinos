@@ -11,52 +11,52 @@ class WorkoutDetailsViewModel extends ChangeNotifier {
 
   late final Command1<Unit, Exercise> createExercise;
   late final Command1<Unit, Exercise> updateExercise;
+  late final Command1<Unit, Exercise> deleteExercise;
 
   WorkoutDetailsViewModel({
     required WorkoutRepository workoutRepository,
     required this.workout
   }) : _workoutRepository = workoutRepository {
-    createExercise = Command1<Unit, Exercise>(
-      (Exercise exercise) async {
-        var result = await _workoutRepository.createExercise(exercise: exercise);
+    createExercise = Command1<Unit, Exercise>(_createExercise);
+    updateExercise = Command1<Unit, Exercise>(_updateExercise);
+  }
 
-        result.onSuccess((success) {
-          workout = workout!.copyWith(
-            exercises: [
-              ...workout!.exercises,
-              success
-            ]
-          );
-        });
+  AsyncResult<Unit> _createExercise(Exercise exercise) async {
+    var result = await _workoutRepository.createExercise(exercise: exercise);
 
-        notifyListeners();
-        return Success(unit);
-      }
-    );
+    result.onSuccess((success) {
+      workout = workout!.copyWith(
+          exercises: [
+            ...workout!.exercises,
+            success
+          ]
+      );
+    });
 
-    updateExercise = Command1<Unit, Exercise>(
-      (Exercise exercise) async {
-        var result = await _workoutRepository.updateExercise(exercise: exercise);
+    notifyListeners();
+    return Success(unit);
+  }
 
-        result.onSuccess((success) {
-          List<Exercise> oldExercises = List.from(workout!.exercises);
+  AsyncResult<Unit> _updateExercise(Exercise exercise) async {
+    var result = await _workoutRepository.updateExercise(exercise: exercise);
 
-          final List<Exercise> updatedExercises = oldExercises.map((exerciseInWorkout) {
-            if (exerciseInWorkout.exerciseId == exercise.exerciseId) {
-              return success;
-            } else {
-              return exerciseInWorkout;
-            }
-          }).toList();
+    result.onSuccess((success) {
+      List<Exercise> oldExercises = List.from(workout!.exercises);
 
-          workout = workout!.copyWith(
-            exercises: updatedExercises
-          );
-        });
+      final List<Exercise> updatedExercises = oldExercises.map((exerciseInWorkout) {
+        if (exerciseInWorkout.exerciseId == exercise.exerciseId) {
+          return success;
+        } else {
+          return exerciseInWorkout;
+        }
+      }).toList();
 
-        notifyListeners();
-        return Success(unit);
-      }
-    );
+      workout = workout!.copyWith(
+          exercises: updatedExercises
+      );
+    });
+
+    notifyListeners();
+    return Success(unit);
   }
 }
