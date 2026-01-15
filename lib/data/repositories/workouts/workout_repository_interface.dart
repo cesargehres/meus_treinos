@@ -8,5 +8,5 @@ abstract interface class WorkoutRepositoryInterface {
   Future<Result<Workout>> createWorkout({required Workout workout});
   Future<Result<Exercise>> createExercise({required Exercise exercise});
   Future<Result<Exercise>> updateExercise({required Exercise exercise});
-  Future<Result<Unit>> deleteExercise({required idExercise});
+  Future<Result<Unit>> deleteExercise({required Exercise exercise});
 }

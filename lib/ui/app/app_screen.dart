@@ -55,7 +55,6 @@ class AppScreen extends StatelessWidget {
                 builder: (context, state) {
                   final viewModel = WorkoutDetailsViewModel(
                     workoutRepository: context.read(),
-                    workout: state.extra as Workout?,
                   );
 
                   return ChangeNotifierProvider<WorkoutDetailsViewModel>.value(

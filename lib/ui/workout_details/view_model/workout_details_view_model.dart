@@ -7,7 +7,8 @@ import 'package:result_dart/result_dart.dart';
 
 class WorkoutDetailsViewModel extends ChangeNotifier {
   final WorkoutRepository _workoutRepository;
-  Workout? workout;
+
+  Workout? get workout => _workoutRepository.currentWorkout;
 
   late final Command1<Unit, Exercise> createExercise;
   late final Command1<Unit, Exercise> updateExercise;
@@ -15,7 +16,6 @@ class WorkoutDetailsViewModel extends ChangeNotifier {
 
   WorkoutDetailsViewModel({
     required WorkoutRepository workoutRepository,
-    required this.workout
   }) : _workoutRepository = workoutRepository {
     createExercise = Command1<Unit, Exercise>(_createExercise);
     updateExercise = Command1<Unit, Exercise>(_updateExercise);
@@ -26,13 +26,6 @@ class WorkoutDetailsViewModel extends ChangeNotifier {
     var result = await _workoutRepository.createExercise(exercise: exercise);
 
     return result.fold((success) {
-      workout = workout!.copyWith(
-        exercises: [
-          ...workout!.exercises,
-          success
-        ]
-      );
-
       notifyListeners();
       return Success(unit);
     }, (failure) {
@@ -44,20 +37,6 @@ class WorkoutDetailsViewModel extends ChangeNotifier {
     var result = await _workoutRepository.updateExercise(exercise: exercise);
 
     return result.fold((success) {
-      List<Exercise> newExercises = List<Exercise>.from(workout!.exercises);
-
-      newExercises = newExercises.map((exerciseInWorkout) {
-        if (exerciseInWorkout.exerciseId == exercise.exerciseId) {
-          return success;
-        } else {
-          return exerciseInWorkout;
-        }
-      }).toList();
-
-      workout = workout!.copyWith(
-          exercises: newExercises
-      );
-
       notifyListeners();
       return Success(unit);
     }, (failure) {
@@ -66,16 +45,9 @@ class WorkoutDetailsViewModel extends ChangeNotifier {
   }
 
   AsyncResult<Unit> _deleteExercise(Exercise exercise) async {
-    var result = await _workoutRepository.deleteExercise(idExercise: exercise.exerciseId);
+    var result = await _workoutRepository.deleteExercise(exercise: exercise);
 
     return result.onSuccess((success) {
-      final List<Exercise> newExercises = List<Exercise>.from(workout!.exercises);
-      newExercises.removeWhere((exerciseInWorkout) => exerciseInWorkout.exerciseId == exercise.exerciseId);
-
-      workout = workout!.copyWith(
-        exercises: newExercises
-      );
-
       notifyListeners();
     });
   }

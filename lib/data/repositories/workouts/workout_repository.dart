@@ -11,6 +11,12 @@ import 'package:result_dart/result_dart.dart';
 class WorkoutRepository implements WorkoutRepositoryInterface {
   final DataBaseLocalInterface _dataBaseLocal;
 
+  List<Workout> _workouts = [];
+  List<Workout> get workouts => _workouts;
+
+  Workout? _currentWorkout;
+  Workout? get currentWorkout => _currentWorkout;
+
   WorkoutRepository({
     required dataBaseLocal
   }) : _dataBaseLocal = dataBaseLocal;
@@ -28,15 +34,28 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         ),
       );
 
+      final Exercise newExercise = Exercise(
+        exerciseId: result.exerciseId,
+        workoutId: result.workoutId,
+        exerciseName: result.exerciseName,
+        series: result.series,
+        repeats: result.repeats,
+        weight: result.weight,
+      );
+
+      for (int index = 0; index < _workouts.length; index++) {
+        if (_workouts[index].workoutId == newExercise.workoutId) {
+          _workouts[index] = _workouts[index].copyWith(
+            exercises: [..._workouts[index].exercises, newExercise]
+          );
+
+          _currentWorkout = _workouts[index];
+          break;
+        }
+      }
+
       return Success(
-        Exercise(
-          exerciseId: result.exerciseId,
-          workoutId: result.workoutId,
-          exerciseName: result.exerciseName,
-          series: result.series,
-          repeats: result.repeats,
-          weight: result.weight,
-        ),
+        newExercise
       );
     } on DataBaseLocalException catch (e) {
       debugPrint('[${e.code}] ${e.message}');
@@ -66,6 +85,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         exercises: <Exercise>[]
       );
 
+      _workouts.add(resultWorkout);
       return Success(resultWorkout);
     } on DataBaseLocalException catch (e) {
       debugPrint('[${e.code}] ${e.message}');
@@ -120,6 +140,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         );
       }
 
+      _workouts = workouts;
       return Success(workouts);
     } on DataBaseLocalException catch (e) {
       debugPrint('[${e.code}] ${e.message}');
@@ -158,6 +179,34 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         weight: exerciseDbModel.weight
       );
 
+      final workoutIndex = _workouts.indexWhere(
+        (workout) => workout.workoutId == updatedExercise.workoutId,
+      );
+
+      if (workoutIndex == -1) {
+        return Failure(Exception('Exercício não encontrado  no cache'));
+      }
+
+      final exercises = _workouts[workoutIndex].exercises;
+
+      final exerciseIndex = exercises.indexWhere(
+        (e) => e.exerciseId == updatedExercise.exerciseId,
+      );
+
+      if (exerciseIndex == -1) {
+        return Failure(Exception('Exercício não encontrado no cache'));
+      }
+
+      final updatedExercises = [...exercises];
+      updatedExercises[exerciseIndex] = updatedExercise;
+
+      final updatedWorkout = _workouts[workoutIndex].copyWith(
+        exercises: updatedExercises,
+      );
+
+      _currentWorkout = updatedWorkout;
+      _workouts[workoutIndex] = updatedWorkout;
+
       return Success(updatedExercise);
     } on DataBaseLocalException catch (e) {
       debugPrint('[${e.code}] ${e.message}');
@@ -174,9 +223,23 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
   }
 
   @override
-  Future<Result<Unit>> deleteExercise({required idExercise}) async {
+  Future<Result<Unit>> deleteExercise({required Exercise exercise}) async {
     try {
-      await _dataBaseLocal.deleteExercise(exerciseId: idExercise);
+      await _dataBaseLocal.deleteExercise(exerciseId: exercise.exerciseId!);
+
+      final workoutIndex = _workouts.indexWhere(
+            (workout) => workout.workoutId == exercise.workoutId,
+      );
+
+      if (workoutIndex != -1) {
+        _workouts[workoutIndex] = _workouts[workoutIndex].copyWith(
+          exercises: _workouts[workoutIndex]
+            .exercises
+            .where((e) => e.exerciseId != exercise.exerciseId)
+            .toList(),
+        );
+        _currentWorkout = _workouts[workoutIndex];
+      }
 
       return Success(unit);
     } on DataBaseLocalException catch (e) {
@@ -191,4 +254,15 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     }
   }
 
+  Future<Result<Unit>> loadCurrentWorkout(Workout workout) async {
+    try {
+      _currentWorkout = workout;
+      print(_currentWorkout);
+      return Success(unit);
+    } catch(e) {
+      return Failure(
+        Exception(e)
+      );
+    }
+  }
 }

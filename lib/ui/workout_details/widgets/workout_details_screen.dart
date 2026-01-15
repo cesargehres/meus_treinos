@@ -35,6 +35,12 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
     return ListenableBuilder(
       listenable: widget.viewModel,
       builder: (context, state) {
+        if (widget.viewModel.workout == null) {
+          return const Center(
+            child: CircularProgressIndicator()
+          );
+        }
+
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
