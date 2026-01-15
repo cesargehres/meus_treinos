@@ -171,7 +171,9 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                                       Theme.of(context).colorScheme.onPrimary,
                                     ),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    widget.viewModel.deleteExercise.execute(exercise);
+                                  },
                                   icon: Icon(
                                     Icons.delete,
                                     color: Theme.of(context).colorScheme.primary,

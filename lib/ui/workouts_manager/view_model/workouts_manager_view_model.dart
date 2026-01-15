@@ -24,24 +24,56 @@ class WorkoutsManagerViewModel extends ChangeNotifier {
 
   AsyncResult<Unit> _getAllWorkouts() async {
     var result = await _workoutRepository.getWorkouts();
-    result.onSuccess((listWorkouts) {
-      _workouts = listWorkouts;
+    Exception? newFailure;
+
+    result.onSuccess((success) {
+      _workouts = success;
+    }).onFailure((failure) {
+      newFailure = failure;
     });
 
+    if (newFailure != null) {
+      return Failure(newFailure!);
+    }
+
     if (workouts.length < 7) {
+      final List<int> existingWeekdays = [];
+
+      for (Workout workout in _workouts) {
+        if ([1, 2, 3, 4, 5, 6, 7].contains(workout.weekday)) {
+          existingWeekdays.add(workout.weekday);
+        }
+      }
+
       for (int c = 1; c <= 7; c++) {
-        await _workoutRepository.createWorkout(
-          workout: Workout(
-            workoutName: 'Sem Treino', weekday: c
-          )
-        );
+        if (!existingWeekdays.contains(c)) {
+          var createWorkoutResult = await _workoutRepository.createWorkout(
+            workout: Workout(
+              workoutName: 'Sem Treino', weekday: c
+            )
+          );
+
+          createWorkoutResult.onFailure((failure) {
+            newFailure = failure;
+          });
+
+          if (newFailure != null) {
+            return Failure(newFailure!);
+          }
+        }
       }
 
       result = await _workoutRepository.getWorkouts();
 
       result.onSuccess((success) {
         _workouts = success;
+      }).onFailure((failure) {
+        newFailure = failure;
       });
+
+      if (newFailure != null) {
+        return Failure(newFailure!);
+      }
     }
 
     notifyListeners();
