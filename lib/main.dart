@@ -24,7 +24,7 @@ void main() {
         // ViewModels
         ChangeNotifierProvider<WorkoutDayViewModel>(
           create: (context) => WorkoutDayViewModel(
-            // workoutRepository: context.read<WorkoutRepository>(),
+            workoutRepository: context.read<WorkoutRepository>(),
           ),
         ),
         ChangeNotifierProvider<WorkoutsManagerViewModel>(

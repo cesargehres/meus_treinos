@@ -21,6 +21,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     required dataBaseLocal
   }) : _dataBaseLocal = dataBaseLocal;
 
+
+
   @override
   Future<Result<Exercise>> createExercise({required Exercise exercise}) async {
     try {
@@ -102,9 +104,41 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
   }
 
   @override
-  Future<Result<Workout>> getWorkoutByWeekday({required int weekday}) {
-    // TODO: implement getWorkoutByWeekday
-    throw UnimplementedError();
+  Future<Result<Workout>> getWorkoutByWeekday({required int weekday}) async {
+    try {
+      final WorkoutDbModel? workoutDbModel = await _dataBaseLocal.readWorkoutByWeekday(weekday: weekday);
+
+      Workout workout = Workout(
+        workoutId: workoutDbModel!.workoutId,
+        workoutName: workoutDbModel.workoutName,
+        weekday: workoutDbModel.weekday,
+        exercises: <Exercise>[]
+      );
+
+      List<ExerciseDbModel> exercisesDbModel = await _dataBaseLocal.readExercisesByWorkout(workoutId: weekday);
+
+      List<Exercise> newExercises = exercisesDbModel.map((exerciseDbModel) {
+        return Exercise(
+          exerciseId: exerciseDbModel.exerciseId,
+          workoutId: exerciseDbModel.workoutId,
+          exerciseName: exerciseDbModel.exerciseName,
+          series: exerciseDbModel.series,
+          repeats: exerciseDbModel.repeats,
+          weight: exerciseDbModel.weight
+        );
+      }).toList();
+
+
+      workout = workout.copyWith(
+        exercises: newExercises
+      );
+
+      _currentWorkout = workout;
+
+      return Success(workout);
+    } catch (e) {
+      return Failure(Exception('Erro ao buscar treino do dia: $e'));
+    }
   }
 
   @override
@@ -257,7 +291,6 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
   Future<Result<Unit>> loadCurrentWorkout(Workout workout) async {
     try {
       _currentWorkout = workout;
-      print(_currentWorkout);
       return Success(unit);
     } catch(e) {
       return Failure(
