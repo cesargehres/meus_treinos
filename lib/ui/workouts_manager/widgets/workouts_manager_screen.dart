@@ -53,9 +53,10 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
                     for (Workout workout in widget.viewModel.workouts) ...[
                       GestureDetector(
                         onTap: () async {
+                          widget.viewModel.loadCurrentWorkout.execute(workout);
+
                           final Workout? updated = await context.push(
                             '/workoutsManager/details/${workout.workoutId}',
-                            extra: workout
                           );
 
                           if (updated is Workout) {
