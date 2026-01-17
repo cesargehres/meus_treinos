@@ -37,7 +37,7 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
         }
 
         if (widget.viewModel.workouts.isEmpty) {
-          return const Center(child: Text('Nenhum treino disponível'));
+          return const Center(child: Text('Nenhum para hoje'));
         }
 
         return Scaffold(
@@ -82,13 +82,13 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
                                 ),
                                 Text(
                                   switch (workout.weekday) {
-                                    1 => 'Dom',
-                                    2 => 'Seg',
-                                    3 => 'Ter',
-                                    4 => 'Qua',
-                                    5 => 'Qui',
-                                    6 => 'Sex',
-                                    _ => 'Sáb'
+                                    1 => 'Seg',
+                                    2 => 'Ter',
+                                    3 => 'Qua',
+                                    4 => 'Qui',
+                                    5 => 'Sex',
+                                    6 => 'Sab',
+                                    _ => 'Dom'
                                   },
                                   style: TextStyle(
                                     color: Theme.of(context).colorScheme.primaryContainer
