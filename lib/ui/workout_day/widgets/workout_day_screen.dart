@@ -16,6 +16,14 @@ class WorkoutDayScreen extends StatefulWidget {
 
 class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.viewModel.getWorkoutDay.execute();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     Color textColor = Theme.of(context).colorScheme.onPrimary;
 
