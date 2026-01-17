@@ -15,7 +15,7 @@ class WorkoutDayViewModel extends ChangeNotifier {
   WorkoutDayViewModel({
     required WorkoutRepository workoutRepository,
   }) : _workoutRepository = workoutRepository {
-    getWorkoutDay = Command0<Unit>(_getWorkoutDay)..execute();
+    getWorkoutDay = Command0<Unit>(_getWorkoutDay);
   }
 
   AsyncResult<Unit> _getWorkoutDay() async {
