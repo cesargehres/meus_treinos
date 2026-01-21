@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:meus_treinos/domain/models/workout/workout.dart';
 
 class ScaffoldWithNavBar extends StatelessWidget {
   final Widget child;
   final GoRouterState state;
 
-  const ScaffoldWithNavBar({super.key, required this.child, required this.state});
+  const ScaffoldWithNavBar({
+    super.key,
+    required this.child,
+    required this.state,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +27,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
     }
 
     return Scaffold(
-      body: SafeArea(
-        child: child
-      ),
+      body: SafeArea(child: child),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).colorScheme.primary,
         currentIndex: currentIndex,
@@ -41,8 +42,14 @@ class ScaffoldWithNavBar extends StatelessWidget {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Meus Treinos'),
-          BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Treino do Dia'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: 'Meus Treinos',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.fitness_center),
+            label: 'Treino do Dia',
+          ),
         ],
       ),
     );
