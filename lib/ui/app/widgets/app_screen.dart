@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:meus_treinos/domain/models/workout/workout.dart';
-import 'package:meus_treinos/ui/app/scaffold_with_nav_bar.dart';
+import 'package:meus_treinos/ui/app/widgets/scaffold_with_nav_bar.dart';
 import 'package:meus_treinos/ui/workout_day/view_model/workout_day_view_model.dart';
 import 'package:meus_treinos/ui/workout_day/widgets/workout_day_screen.dart';
 import 'package:meus_treinos/ui/workout_details/view_model/workout_details_view_model.dart';
