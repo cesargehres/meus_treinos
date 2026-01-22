@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
+import 'package:meus_treinos/domain/models/workout/workout.dart';
 import 'package:meus_treinos/ui/workout_details/view_model/workout_details_view_model.dart';
 import 'package:meus_treinos/ui/workout_details/widgets/exercise_edit_widget.dart';
 
@@ -17,15 +18,20 @@ class WorkoutDetailsScreen extends StatefulWidget {
 }
 
 class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
+  final TextEditingController _workoutNameController = TextEditingController();
+
   bool _modalOpen = false;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-
-    });
-
     super.initState();
+    _workoutNameController.text = widget.viewModel.workout!.workoutName;
+  }
+
+  @override
+  void dispose() {
+    _workoutNameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,7 +55,74 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                 context.pop(widget.viewModel.workout);
               },
             ),
-            title: Text(widget.viewModel.workout!.workoutName)
+            title: GestureDetector(
+              onTap: () {
+                Scaffold.of(context).showBottomSheet(
+                  enableDrag: !(widget.viewModel.updateWorkout.value.isRunning || widget.viewModel.loadCurrentWorkout.value.isRunning),
+                  (context) {
+                    return Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                            decoration: InputDecoration(labelText: 'Nome do treino'),
+                            controller: _workoutNameController,
+                          ),
+                          SizedBox(height: 16),
+                          Wrap(
+                            direction: Axis.horizontal,
+                            spacing: 16,
+                            runSpacing: 8,
+                            children: [
+                              SizedBox(
+                                width: 120,
+                                height: 40,
+                                child: widget.viewModel.updateWorkout.value.isRunning || widget.viewModel.loadCurrentWorkout.value.isRunning
+                                  ? CircularProgressIndicator(
+                                  padding: EdgeInsets.symmetric(horizontal: 40)
+                                ) : ElevatedButton(
+                                  onPressed: () async {
+                                    Workout newWorkout = widget.viewModel.workout!.copyWith(workoutName: _workoutNameController.text);
+                                    await widget.viewModel.updateWorkout.execute(newWorkout);
+                                    if (widget.viewModel.updateWorkout.value.isSuccess) {
+                                      await widget.viewModel.loadCurrentWorkout.execute(newWorkout);
+                                    }
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Salvar')
+                                )
+                              ),
+                              SizedBox(
+                                width: 120,
+                                child: ElevatedButton(
+                                  onPressed: widget.viewModel.updateWorkout.value.isRunning || widget.viewModel.loadCurrentWorkout.value.isRunning
+                                  ? null
+                                  : () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Cancelar')
+                                ),
+                              )
+                            ],
+                          )
+                        ]
+                      ),
+                    );
+                  }
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(widget.viewModel.workout!.workoutName),
+                  Icon(
+                    Icons.edit,
+                    color: Theme.of(context).colorScheme.primary,
+                  )
+                ]
+              )
+            )
           ),
           body: SizedBox.expand(
             child: Padding(
@@ -159,8 +232,8 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                                     Scaffold.of(context).showBottomSheet(
                                       enableDrag: !widget.viewModel.updateExercise.value.isRunning,
                                       (context) => ExerciseEditWidget(
-                                      exercise: exercise,
-                                      onSave: widget.viewModel.updateExercise,
+                                        exercise: exercise,
+                                        onSave: widget.viewModel.updateExercise,
                                       )
                                     ).closed.then((_) {
                                       setState(() {_modalOpen = false;});
