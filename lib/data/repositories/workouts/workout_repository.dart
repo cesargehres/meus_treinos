@@ -227,7 +227,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         (e) => e.exerciseId == updatedExercise.exerciseId,
       );
 
-      if (exerciseIndex == -1) {
+      if (exerciseIndex != -1) {
         return Failure(Exception('Exercício não encontrado no cache'));
       }
 
@@ -262,7 +262,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
       await _dataBaseLocal.deleteExercise(exerciseId: exercise.exerciseId!);
 
       final workoutIndex = _workouts.indexWhere(
-            (workout) => workout.workoutId == exercise.workoutId,
+        (workout) => workout.workoutId == exercise.workoutId,
       );
 
       if (workoutIndex != -1) {
@@ -288,6 +288,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     }
   }
 
+  @override
   Future<Result<Unit>> loadCurrentWorkout(Workout workout) async {
     try {
       _currentWorkout = workout;
@@ -295,6 +296,64 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     } catch(e) {
       return Failure(
         Exception(e)
+      );
+    }
+  }
+
+  @override
+  Future<Result<Workout>> updateWorkout({required Workout workout}) async {
+    try {
+      final WorkoutDbModel workoutDbModel = await _dataBaseLocal.updateWorkout(
+        workoutDbModel: WorkoutDbModel(
+          workoutId: workout.workoutId,
+          workoutName: workout.workoutName,
+          weekday: workout.weekday
+        )
+      );
+
+      Workout newWorkout = Workout(
+        workoutId: workoutDbModel.workoutId,
+        workoutName: workoutDbModel.workoutName,
+        weekday: workoutDbModel.weekday,
+        exercises: <Exercise>[]
+      );
+
+      final List<ExerciseDbModel> exercisesResult = await _dataBaseLocal.readExercisesByWorkout(workoutId: newWorkout.workoutId!);
+
+      final List<Exercise> newExercises = <Exercise>[];
+
+      for (ExerciseDbModel exerciseInResult in exercisesResult) {
+        newExercises.add(
+          Exercise(
+            workoutId: exerciseInResult.workoutId,
+            exerciseName: exerciseInResult.exerciseName,
+            series: exerciseInResult.series,
+            repeats: exerciseInResult.repeats,
+            weight: exerciseInResult.weight
+          )
+        );
+      }
+
+      newWorkout = newWorkout.copyWith(
+        workoutName: workoutDbModel.workoutName,
+        exercises: newExercises
+      );
+
+      int index = _workouts.indexWhere((workout) => workout.workoutId == newWorkout.workoutId);
+      if (index == -1) {
+        return Failure(Exception('Treino não encontrado no cache'));
+      }
+
+      _workouts[index] = newWorkout;
+      return Success(newWorkout);
+    } on DataBaseLocalException catch (e) {
+      debugPrint('[${e.code}] ${e.message}');
+      debugPrint(e.technicalMessage);
+
+      return Failure(e);
+    } catch (e) {
+      return Failure(
+          Exception(e)
       );
     }
   }

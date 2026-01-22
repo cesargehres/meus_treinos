@@ -3,7 +3,6 @@ import 'package:meus_treinos/data/repositories/workouts/workout_repository.dart'
 import 'package:meus_treinos/domain/models/workout/workout.dart';
 
 import 'package:result_command/result_command.dart';
-import 'package:result_dart/functions.dart';
 import 'package:result_dart/result_dart.dart';
 
 class WorkoutsManagerViewModel extends ChangeNotifier {
