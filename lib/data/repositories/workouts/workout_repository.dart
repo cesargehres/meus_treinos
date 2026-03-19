@@ -17,11 +17,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
   Workout? _currentWorkout;
   Workout? get currentWorkout => _currentWorkout;
 
-  WorkoutRepository({
-    required dataBaseLocal
-  }) : _dataBaseLocal = dataBaseLocal;
-
-
+  WorkoutRepository({required dataBaseLocal}) : _dataBaseLocal = dataBaseLocal;
 
   @override
   Future<Result<Exercise>> createExercise({required Exercise exercise}) async {
@@ -48,7 +44,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
       for (int index = 0; index < _workouts.length; index++) {
         if (_workouts[index].workoutId == newExercise.workoutId) {
           _workouts[index] = _workouts[index].copyWith(
-            exercises: [..._workouts[index].exercises, newExercise]
+            exercises: [..._workouts[index].exercises, newExercise],
           );
 
           _currentWorkout = _workouts[index];
@@ -56,9 +52,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         }
       }
 
-      return Success(
-        newExercise
-      );
+      return Success(newExercise);
     } on DataBaseLocalException catch (e) {
       debugPrint('[${e.code}] ${e.message}');
       debugPrint(e.technicalMessage);
@@ -66,25 +60,25 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
       return Failure(e);
     } catch (e) {
       debugPrint(e.toString());
-      return Failure(
-        Exception('Houve um erro inesperado!')
-      );
+      return Failure(Exception('Houve um erro inesperado!'));
     }
   }
 
   @override
   Future<Result<Workout>> createWorkout({required Workout workout}) async {
     try {
-      final WorkoutDbModel result = await _dataBaseLocal.createWorkout(workoutDbModel: WorkoutDbModel(
-        workoutName: workout.workoutName,
-        weekday: workout.weekday,
-      ));
+      final WorkoutDbModel result = await _dataBaseLocal.createWorkout(
+        workoutDbModel: WorkoutDbModel(
+          workoutName: workout.workoutName.toLowerCase(),
+          weekday: workout.weekday,
+        ),
+      );
 
       final Workout resultWorkout = Workout(
         workoutId: result.workoutId,
         workoutName: result.workoutName,
         weekday: result.weekday,
-        exercises: <Exercise>[]
+        exercises: <Exercise>[],
       );
 
       _workouts.add(resultWorkout);
@@ -97,25 +91,25 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     } catch (e) {
       debugPrint(e.toString());
 
-      return Failure(
-        Exception('Houve um erro inesperado!')
-      );
+      return Failure(Exception('Houve um erro inesperado!'));
     }
   }
 
   @override
   Future<Result<Workout>> getWorkoutByWeekday({required int weekday}) async {
     try {
-      final WorkoutDbModel? workoutDbModel = await _dataBaseLocal.readWorkoutByWeekday(weekday: weekday);
+      final WorkoutDbModel? workoutDbModel = await _dataBaseLocal
+          .readWorkoutByWeekday(weekday: weekday);
 
       Workout workout = Workout(
         workoutId: workoutDbModel!.workoutId,
         workoutName: workoutDbModel.workoutName,
         weekday: workoutDbModel.weekday,
-        exercises: <Exercise>[]
+        exercises: <Exercise>[],
       );
 
-      List<ExerciseDbModel> exercisesDbModel = await _dataBaseLocal.readExercisesByWorkout(workoutId: weekday);
+      List<ExerciseDbModel> exercisesDbModel = await _dataBaseLocal
+          .readExercisesByWorkout(workoutId: workoutDbModel.workoutId!);
 
       List<Exercise> newExercises = exercisesDbModel.map((exerciseDbModel) {
         return Exercise(
@@ -124,14 +118,11 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
           exerciseName: exerciseDbModel.exerciseName,
           series: exerciseDbModel.series,
           repeats: exerciseDbModel.repeats,
-          weight: exerciseDbModel.weight
+          weight: exerciseDbModel.weight,
         );
       }).toList();
 
-
-      workout = workout.copyWith(
-        exercises: newExercises
-      );
+      workout = workout.copyWith(exercises: newExercises);
 
       _currentWorkout = workout;
 
@@ -151,27 +142,30 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
           workoutId: workoutDbModel.workoutId,
           workoutName: workoutDbModel.workoutName,
           weekday: workoutDbModel.weekday,
-          exercises: <Exercise>[]
+          exercises: <Exercise>[],
         );
       }).toList();
 
       for (int c = 0; c < workouts.length; c++) {
-        final List<ExerciseDbModel> resultExercisesDbModel = await _dataBaseLocal.readExercisesByWorkout(workoutId: workouts[c].workoutId!);
+        final List<ExerciseDbModel> resultExercisesDbModel =
+            await _dataBaseLocal.readExercisesByWorkout(
+              workoutId: workouts[c].workoutId!,
+            );
 
-        final List<Exercise> exercises = resultExercisesDbModel.map((exerciseDbModel) {
+        final List<Exercise> exercises = resultExercisesDbModel.map((
+          exerciseDbModel,
+        ) {
           return Exercise(
             exerciseId: exerciseDbModel.exerciseId,
             workoutId: exerciseDbModel.workoutId,
             exerciseName: exerciseDbModel.exerciseName,
             series: exerciseDbModel.series,
             repeats: exerciseDbModel.repeats,
-            weight: exerciseDbModel.weight
+            weight: exerciseDbModel.weight,
           );
         }).toList();
 
-        workouts[c] = workouts[c].copyWith(
-          exercises: exercises
-        );
+        workouts[c] = workouts[c].copyWith(exercises: exercises);
       }
 
       _workouts = workouts;
@@ -184,25 +178,24 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     } catch (e) {
       debugPrint(e.toString());
 
-      return Failure(
-        Exception('Houve um erro inesperado!')
-      );
+      return Failure(Exception('Houve um erro inesperado!'));
     }
   }
 
   @override
   Future<Result<Exercise>> updateExercise({required Exercise exercise}) async {
     try {
-      final ExerciseDbModel exerciseDbModel = await _dataBaseLocal.updateExercise(
-        exerciseDbModel: ExerciseDbModel(
-          exerciseId: exercise.exerciseId,
-          workoutId: exercise.workoutId,
-          exerciseName: exercise.exerciseName,
-          series: exercise.series,
-          repeats: exercise.repeats,
-          weight: exercise.weight
-        )
-      );
+      final ExerciseDbModel exerciseDbModel = await _dataBaseLocal
+          .updateExercise(
+            exerciseDbModel: ExerciseDbModel(
+              exerciseId: exercise.exerciseId,
+              workoutId: exercise.workoutId,
+              exerciseName: exercise.exerciseName,
+              series: exercise.series,
+              repeats: exercise.repeats,
+              weight: exercise.weight,
+            ),
+          );
 
       final Exercise updatedExercise = Exercise(
         exerciseId: exerciseDbModel.exerciseId,
@@ -210,7 +203,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         exerciseName: exerciseDbModel.exerciseName,
         series: exerciseDbModel.series,
         repeats: exerciseDbModel.repeats,
-        weight: exerciseDbModel.weight
+        weight: exerciseDbModel.weight,
       );
 
       final workoutIndex = _workouts.indexWhere(
@@ -227,7 +220,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         (e) => e.exerciseId == updatedExercise.exerciseId,
       );
 
-      if (exerciseIndex != -1) {
+      if (exerciseIndex == -1) {
         return Failure(Exception('Exercício não encontrado no cache'));
       }
 
@@ -250,9 +243,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     } catch (e) {
       debugPrint(e.toString());
 
-      return Failure(
-        Exception('Houve um erro inesperado!')
-      );
+      return Failure(Exception('Houve um erro inesperado!'));
     }
   }
 
@@ -267,10 +258,9 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
 
       if (workoutIndex != -1) {
         _workouts[workoutIndex] = _workouts[workoutIndex].copyWith(
-          exercises: _workouts[workoutIndex]
-            .exercises
-            .where((e) => e.exerciseId != exercise.exerciseId)
-            .toList(),
+          exercises: _workouts[workoutIndex].exercises
+              .where((e) => e.exerciseId != exercise.exerciseId)
+              .toList(),
         );
         _currentWorkout = _workouts[workoutIndex];
       }
@@ -282,9 +272,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
 
       return Failure(e);
     } catch (e) {
-      return Failure(
-        Exception(e)
-      );
+      return Failure(Exception(e));
     }
   }
 
@@ -293,10 +281,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     try {
       _currentWorkout = workout;
       return Success(unit);
-    } catch(e) {
-      return Failure(
-        Exception(e)
-      );
+    } catch (e) {
+      return Failure(Exception(e));
     }
   }
 
@@ -306,40 +292,44 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
       final WorkoutDbModel workoutDbModel = await _dataBaseLocal.updateWorkout(
         workoutDbModel: WorkoutDbModel(
           workoutId: workout.workoutId,
-          workoutName: workout.workoutName,
-          weekday: workout.weekday
-        )
+          workoutName: workout.workoutName.toLowerCase(),
+          weekday: workout.weekday,
+        ),
       );
 
       Workout newWorkout = Workout(
         workoutId: workoutDbModel.workoutId,
         workoutName: workoutDbModel.workoutName,
         weekday: workoutDbModel.weekday,
-        exercises: <Exercise>[]
+        exercises: <Exercise>[],
       );
 
-      final List<ExerciseDbModel> exercisesResult = await _dataBaseLocal.readExercisesByWorkout(workoutId: newWorkout.workoutId!);
+      final List<ExerciseDbModel> exercisesResult = await _dataBaseLocal
+          .readExercisesByWorkout(workoutId: newWorkout.workoutId!);
 
       final List<Exercise> newExercises = <Exercise>[];
 
       for (ExerciseDbModel exerciseInResult in exercisesResult) {
         newExercises.add(
           Exercise(
+            exerciseId: exerciseInResult.exerciseId,
             workoutId: exerciseInResult.workoutId,
             exerciseName: exerciseInResult.exerciseName,
             series: exerciseInResult.series,
             repeats: exerciseInResult.repeats,
-            weight: exerciseInResult.weight
-          )
+            weight: exerciseInResult.weight,
+          ),
         );
       }
 
       newWorkout = newWorkout.copyWith(
         workoutName: workoutDbModel.workoutName,
-        exercises: newExercises
+        exercises: newExercises,
       );
 
-      int index = _workouts.indexWhere((workout) => workout.workoutId == newWorkout.workoutId);
+      int index = _workouts.indexWhere(
+        (workout) => workout.workoutId == newWorkout.workoutId,
+      );
       if (index == -1) {
         return Failure(Exception('Treino não encontrado no cache'));
       }
@@ -352,9 +342,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
 
       return Failure(e);
     } catch (e) {
-      return Failure(
-          Exception(e)
-      );
+      return Failure(Exception(e));
     }
   }
 }

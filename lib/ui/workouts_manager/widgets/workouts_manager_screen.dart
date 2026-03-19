@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meus_treinos/domain/models/workout/workout.dart';
 import 'package:meus_treinos/ui/workouts_manager/view_model/workouts_manager_view_model.dart';
+import 'package:meus_treinos/utils/string_extensions.dart';
 
 class WorkoutsManagerScreen extends StatefulWidget {
   final WorkoutsManagerViewModel viewModel;
 
-  const WorkoutsManagerScreen({
-    required this.viewModel,
-    super.key
-  });
+  const WorkoutsManagerScreen({required this.viewModel, super.key});
 
   @override
   State<WorkoutsManagerScreen> createState() => _WorkoutsManagerScreenState();
@@ -42,7 +40,10 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('Meus Treinos'),
+            title: Text(
+              'Meus Treinos',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           body: SizedBox.expand(
             child: Padding(
@@ -72,14 +73,21 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
                             padding: const EdgeInsets.all(8),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children:  [
-                                Text(
-                                  workout.workoutName,
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    color: Theme.of(context).colorScheme.onPrimary,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    workout.workoutName.title,
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                 ),
+                                const SizedBox(width: 8),
                                 Text(
                                   switch (workout.weekday) {
                                     1 => 'Seg',
@@ -88,13 +96,15 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
                                     4 => 'Qui',
                                     5 => 'Sex',
                                     6 => 'Sab',
-                                    _ => 'Dom'
+                                    _ => 'Dom',
                                   },
                                   style: TextStyle(
-                                    color: Theme.of(context).colorScheme.primaryContainer
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primaryContainer,
                                   ),
-                                )
-                              ]
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -110,5 +120,4 @@ class _WorkoutsManagerScreenState extends State<WorkoutsManagerScreen> {
       },
     );
   }
-
 }

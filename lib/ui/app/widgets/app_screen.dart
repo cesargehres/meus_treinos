@@ -16,11 +16,15 @@ class AppScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Meus Treinos',
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-          useMaterial3: true,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF4CAF50),
+          primary: const Color(0xFF4CAF50),
+          brightness: Brightness.light,
         ),
-      routerConfig: _router
+        useMaterial3: true,
+      ),
+      routerConfig: _router,
     );
   }
 
@@ -31,7 +35,7 @@ class AppScreen extends StatelessWidget {
           return ScaffoldWithNavBar(
             key: ValueKey(state.uri.path),
             state: state,
-            child: child
+            child: child,
           );
         },
         routes: [
@@ -46,7 +50,7 @@ class AppScreen extends StatelessWidget {
             name: 'workoutsManager',
             path: '/workoutsManager',
             builder: (context, state) => WorkoutsManagerScreen(
-              viewModel: context.read<WorkoutsManagerViewModel>()
+              viewModel: context.read<WorkoutsManagerViewModel>(),
             ),
             routes: [
               GoRoute(
@@ -61,8 +65,8 @@ class AppScreen extends StatelessWidget {
                     child: WorkoutDetailsScreen(viewModel: viewModel),
                   );
                 },
-              )
-            ]
+              ),
+            ],
           ),
         ],
       ),

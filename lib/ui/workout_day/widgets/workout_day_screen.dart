@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
 import 'package:meus_treinos/ui/workout_day/view_model/workout_day_view_model.dart';
+import 'package:meus_treinos/utils/string_extensions.dart';
 
 class WorkoutDayScreen extends StatefulWidget {
   final WorkoutDayViewModel viewModel;
 
-  const WorkoutDayScreen({
-    required this.viewModel,
-    super.key
-  });
+  const WorkoutDayScreen({required this.viewModel, super.key});
 
   @override
   State<WorkoutDayScreen> createState() => _WorkoutDayScreenState();
@@ -28,127 +26,126 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
     Color textColor = Theme.of(context).colorScheme.onPrimary;
 
     return ListenableBuilder(
-        listenable: widget.viewModel,
-        builder: (context, state) {
-          if (widget.viewModel.getWorkoutDay.value.isRunning) {
-            return const Center(
-                child: CircularProgressIndicator()
-            );
-          }
+      listenable: widget.viewModel,
+      builder: (context, state) {
+        if (widget.viewModel.getWorkoutDay.value.isRunning) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          if (widget.viewModel.workoutDay == null) {
-            return const Center(
-              child: Text('Sem Treino'),
-            );
-          }
+        if (widget.viewModel.workoutDay == null) {
+          return const Center(child: Text('Sem Treino'));
+        }
 
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Meus Treinos')
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              widget.viewModel.workoutDay!.workoutName.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
-            body: SizedBox.expand(
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: 8,
-                    top: 8,
-                    right: 8,
-                    bottom: 8,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: Center(
+                  child: Text(
+                    switch (widget.viewModel.workoutDay!.weekday) {
+                      1 => 'Segunda',
+                      2 => 'Terça',
+                      3 => 'Quarta',
+                      4 => 'Quinta',
+                      5 => 'Sexta',
+                      6 => 'Sábado',
+                      _ => 'Domingo',
+                    },
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    spacing: 8,
-                    children: [
-                      for (Exercise exercise in widget.viewModel.workoutDay!.exercises)
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          color: Theme.of(context).colorScheme.primary,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
+              ),
+            ],
+          ),
+          body: SizedBox.expand(
+            child: Padding(
+              padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
+              child: SingleChildScrollView(
+                child: Column(
+                  spacing: 8,
+                  children: [
+                    for (Exercise exercise
+                        in widget.viewModel.workoutDay!.exercises)
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        color: Theme.of(context).colorScheme.primary,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     exercise.exerciseName,
                                     style: TextStyle(
-                                        fontSize: 20,
-                                        color: textColor
+                                      fontSize: 20,
+                                      color: textColor,
                                     ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                   Row(
                                     spacing: 8,
                                     children: [
-                                      Row(
-                                        spacing: 2,
-                                        children: [
-                                          Text(
-                                            'Series: ',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: textColor
-                                            ),
+                                      Flexible(
+                                        child: Text(
+                                          'Series: ${exercise.series}',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: textColor,
                                           ),
-                                          Text(
-                                            exercise.series.toString(),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: textColor
-                                            ),
-                                          )
-                                        ],
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
                                       ),
-                                      Row(
-                                        spacing: 2,
-                                        children: [
-                                          Text(
-                                            'Repetições: ',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: textColor
-                                            ),
+                                      Flexible(
+                                        child: Text(
+                                          'Repetições: ${exercise.repeats}',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: textColor,
                                           ),
-                                          Text(
-                                            exercise.repeats.toString(),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: textColor
-                                            ),
-                                          )
-                                        ],
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
                                       ),
-                                      Row(
-                                        spacing: 2,
-                                        children: [
-                                          Text(
-                                            'Peso: ',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: textColor
-                                            ),
+                                      Flexible(
+                                        child: Text(
+                                          'Peso: ${exercise.weight}',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: textColor,
                                           ),
-                                          Text(
-                                            exercise.weight.toString(),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: textColor
-                                            ),
-                                          )
-                                        ],
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
                                       ),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
-                            ],
-                          ),
-                        )
-                    ],
-                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
-          );
-        }
+          ),
+        );
+      },
     );
   }
 }
