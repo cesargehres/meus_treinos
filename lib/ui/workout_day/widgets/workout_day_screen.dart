@@ -98,38 +98,20 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                                   Row(
                                     spacing: 8,
                                     children: [
-                                      Flexible(
-                                        child: Text(
-                                          'Series: ${exercise.series}',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: textColor,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                        ),
+                                      _infoLabel(
+                                        'Series: ',
+                                        exercise.series.toString(),
+                                        textColor,
                                       ),
-                                      Flexible(
-                                        child: Text(
-                                          'Repetições: ${exercise.repeats}',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: textColor,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                        ),
+                                      _infoLabel(
+                                        'Repetições: ',
+                                        exercise.repeats.toString(),
+                                        textColor,
                                       ),
-                                      Flexible(
-                                        child: Text(
-                                          'Peso: ${exercise.weight}',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: textColor,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                        ),
+                                      _infoLabel(
+                                        'Peso: ',
+                                        exercise.weight.toString(),
+                                        textColor,
                                       ),
                                     ],
                                   ),
@@ -146,6 +128,25 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _infoLabel(String label, String value, Color textColor) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 2,
+      children: [
+        Text(label, style: TextStyle(fontSize: 12, color: textColor)),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 35),
+          child: Text(
+            value,
+            style: TextStyle(fontSize: 12, color: textColor),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+      ],
     );
   }
 }
