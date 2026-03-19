@@ -146,27 +146,17 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                 Row(
                   spacing: 8,
                   children: [
-                    Flexible(
-                      child: _infoLabel(
-                        'Series: ',
-                        exercise.series.toString(),
-                        textColor,
-                      ),
+                    _infoLabel(
+                      'Series: ',
+                      exercise.series.toString(),
+                      textColor,
                     ),
-                    Flexible(
-                      child: _infoLabel(
-                        'Repetições: ',
-                        exercise.repeats.toString(),
-                        textColor,
-                      ),
+                    _infoLabel(
+                      'Repetições: ',
+                      exercise.repeats.toString(),
+                      textColor,
                     ),
-                    Flexible(
-                      child: _infoLabel(
-                        'Peso: ',
-                        exercise.weight.toString(),
-                        textColor,
-                      ),
-                    ),
+                    _infoLabel('Peso: ', exercise.weight.toString(), textColor),
                   ],
                 ),
               ],
@@ -203,15 +193,9 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
       mainAxisSize: MainAxisSize.min,
       spacing: 2,
       children: [
-        Flexible(
-          child: Text(
-            label,
-            style: TextStyle(fontSize: 12, color: color),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        ),
-        Flexible(
+        Text(label, style: TextStyle(fontSize: 12, color: color)),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 35),
           child: Text(
             value,
             style: TextStyle(fontSize: 12, color: color),
