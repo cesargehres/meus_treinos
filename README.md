@@ -102,14 +102,6 @@ Os arquivos gerados pelo freezed (`*.freezed.dart`) já estão versionados. Se v
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-## Próximos passos
-
-- [ ] Testes unitários do repositório e dos ViewModels, usando um banco fake
-- [ ] Pipeline de CI (análise estática e testes) com GitHub Actions
-- [ ] Histórico dos treinos realizados e gráfico de evolução de carga por exercício
-- [ ] Mensagens de erro visíveis para o usuário
-- [ ] Tema escuro
-
 ## Autor
 
 Feito por [César Gehres](https://github.com/cesargehres).
