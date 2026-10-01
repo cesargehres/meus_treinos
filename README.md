@@ -2,13 +2,12 @@
 
 App mobile em Flutter para organizar a rotina de musculação da semana. Cada dia tem um treino, cada treino tem seus exercícios (séries, repetições e carga), e a tela inicial já mostra o treino do dia. Tudo funciona offline, com os dados salvos localmente em SQLite.
 
-<!-- Adicione aqui prints ou um GIF do app, por exemplo:
 <p align="center">
-  <img src="docs/treino_do_dia.png" width="250" />
-  <img src="docs/meus_treinos.png" width="250" />
-  <img src="docs/detalhes.png" width="250" />
+  <img src="docs/treino_do_dia.png" width="200" alt="Treino do dia" />
+  <img src="docs/meus_treinos.png" width="200" alt="Meus treinos" />
+  <img src="docs/detalhes.png" width="200" alt="Detalhes do treino" />
+  <img src="docs/editar_exercicio.png" width="200" alt="Editar exercício" />
 </p>
--->
 
 ## Funcionalidades
 
