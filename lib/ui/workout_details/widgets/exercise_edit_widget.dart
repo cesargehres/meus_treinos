@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
 import 'package:meus_treinos/ui/shared/app_bottom_sheet.dart';
+import 'package:meus_treinos/utils/string_extensions.dart';
 import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
@@ -26,6 +27,8 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
       TextEditingController();
   final TextEditingController _exerciseWeightController =
       TextEditingController();
+
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -73,36 +76,24 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
                 ),
                 TextField(
                   decoration: const InputDecoration(labelText: 'Peso'),
-                  keyboardType: TextInputType.number,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   controller: _exerciseWeightController,
                 ),
+                if (_errorMessage != null) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    _errorMessage!,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 16),
                 BottomSheetActions(
                   isLoading: widget.onSave.value.isRunning,
-                  onSave: () async {
-                    if (_exerciseNameController.text.trim().isEmpty ||
-                        _exerciseSeriesController.text.trim().isEmpty ||
-                        _exerciseRepeatsController.text.trim().isEmpty ||
-                        _exerciseWeightController.text.trim().isEmpty) {
-                      return;
-                    }
-
-                    await widget.onSave.execute(
-                      Exercise(
-                        exerciseId: widget.exercise.exerciseId,
-                        workoutId: widget.exercise.workoutId,
-                        exerciseName: _exerciseNameController.text,
-                        series: int.parse(_exerciseSeriesController.text),
-                        repeats: int.parse(_exerciseRepeatsController.text),
-                        weight: double.parse(_exerciseWeightController.text),
-                      ),
-                    );
-
-                    if (!context.mounted) return;
-                    if (widget.onSave.value.isSuccess) {
-                      Navigator.of(context).pop();
-                    }
-                  },
+                  onSave: _save,
                   onCancel: () => Navigator.of(context).pop(),
                 ),
               ],
@@ -111,5 +102,47 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
         );
       },
     );
+  }
+
+  Future<void> _save() async {
+    final name = _exerciseNameController.text.trim();
+    final series = _exerciseSeriesController.text.toIntOrNull();
+    final repeats = _exerciseRepeatsController.text.toIntOrNull();
+    final weight = _exerciseWeightController.text.toDoubleOrNull();
+
+    if (name.isEmpty) {
+      setState(() => _errorMessage = 'Informe o nome do exercício');
+      return;
+    }
+
+    if (series == null || series <= 0 || repeats == null || repeats <= 0) {
+      setState(
+        () => _errorMessage = 'Séries e repetições devem ser números inteiros',
+      );
+      return;
+    }
+
+    if (weight == null || weight < 0) {
+      setState(() => _errorMessage = 'Informe um peso válido (ex: 20 ou 20,5)');
+      return;
+    }
+
+    setState(() => _errorMessage = null);
+
+    await widget.onSave.execute(
+      Exercise(
+        exerciseId: widget.exercise.exerciseId,
+        workoutId: widget.exercise.workoutId,
+        exerciseName: name,
+        series: series,
+        repeats: repeats,
+        weight: weight,
+      ),
+    );
+
+    if (!mounted) return;
+    if (widget.onSave.value.isSuccess) {
+      Navigator.of(context).pop();
+    }
   }
 }
