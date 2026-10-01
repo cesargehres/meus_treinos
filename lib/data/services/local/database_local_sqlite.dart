@@ -169,6 +169,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       );
 
       return exercise;
+    } on DataBaseLocalException {
+      rethrow;
     } catch (e, s) {
       final String technical = '$e\n$s';
 
@@ -247,6 +249,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       );
 
       return workout;
+    } on DataBaseLocalException {
+      rethrow;
     } catch (e, s) {
       final String technical = '$e\n$s';
 
@@ -443,6 +447,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
           code: 'SQLITE_DELETE_EXERCISE_NOT_FOUND',
         );
       }
+    } on DataBaseLocalException {
+      rethrow;
     } catch (e, s) {
       final technical = '$e\n$s';
 
@@ -475,6 +481,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
           code: 'SQLITE_DELETE_WORKOUT_NOT_FOUND',
         );
       }
+    } on DataBaseLocalException {
+      rethrow;
     } catch (e, s) {
       final String technical = '$e\n$s';
 
