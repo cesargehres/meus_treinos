@@ -1,8 +1,7 @@
-import 'package:flutter/foundation.dart';
+import 'package:meus_treinos/data/services/exceptions/exceptions.dart';
 import 'package:meus_treinos/data/services/local/database_local_interface.dart';
 import 'package:meus_treinos/data/services/models/exercise_db_model/exercise_db_model.dart';
 import 'package:meus_treinos/data/services/models/workout_db_model/workout_db_model.dart';
-import 'package:meus_treinos/utils/exceptions.dart';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -29,6 +28,9 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     return await openDatabase(
       path,
       version: _dbVersion,
+      onConfigure: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
       onCreate: _onCreate,
     );
   }
@@ -91,9 +93,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
-      throw LocalStorageException(
+      throw DataBaseLocalException(
         message: 'Erro ao criar o exercício',
         technicalMessage: technical,
         code: 'SQLITE_INSERT_EXERCISE',
@@ -127,9 +127,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
-      throw LocalStorageException(
+      throw DataBaseLocalException(
         message: 'Erro ao criar o treino',
         technicalMessage: technical,
         code: 'SQLITE_INSERT_WORKOUT',
@@ -152,7 +150,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       );
 
       if (result.isEmpty) {
-        throw LocalStorageException(
+        throw DataBaseLocalException(
           message: 'Exercício não encontrado',
           technicalMessage: 'No exercise found with id=$exerciseId',
           code: 'SQLITE_EXERCISE_NOT_FOUND',
@@ -174,9 +172,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
-      throw LocalStorageException(
+      throw DataBaseLocalException(
         message: 'Erro ao buscar o exercício',
         technicalMessage: technical,
         code: 'SQLITE_READ_EXERCISE',
@@ -199,6 +195,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
 
       final List<ExerciseDbModel> exercises = result.map((exercise) {
         return ExerciseDbModel(
+            exerciseId: exercise['exercise_id'] as int,
             workoutId: workoutId,
             exerciseName: exercise['exercise_name'] as String,
             series: exercise['series'] as int,
@@ -211,9 +208,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s){
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
-      throw LocalStorageException(
+      throw DataBaseLocalException(
         message: 'Erro ao buscar exercícios do treino',
         technicalMessage: technical,
         code: 'SQLITE_READ_EXERCISES_BY_WORKOUT',
@@ -236,7 +231,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       );
 
       if (result.isEmpty) {
-        throw LocalStorageException(
+        throw DataBaseLocalException(
           message: 'Treino não encontrado',
           technicalMessage: 'No workout found with id=$workoutId',
           code: 'SQLITE_WORKOUT_NOT_FOUND',
@@ -255,9 +250,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
-      throw LocalStorageException(
+      throw DataBaseLocalException(
         message: 'Erro ao buscar treino',
         technicalMessage: technical,
         code: 'SQLITE_READ_WORKOUT',
@@ -294,9 +287,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
-      throw LocalStorageException(
+      throw DataBaseLocalException(
         message: 'Erro ao buscar treino',
         technicalMessage: technical,
         code: 'SQLITE_READ_WORKOUT',
@@ -326,9 +317,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
-      throw LocalStorageException(
+      throw DataBaseLocalException(
         message: 'Erro ao buscar treinos',
         technicalMessage: technical,
         code: 'SQLITE_READ_WORKOUT',
@@ -342,7 +331,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
   }) async {
     try {
       if (exerciseDbModel.exerciseId == null) {
-        throw LocalStorageException(
+        throw DataBaseLocalException(
           message: 'Não é possível atualizar um exercício sem id',
           technicalMessage: 'exerciseId was null when calling updateExercise',
           code: 'SQLITE_UPDATE_EXERCISE_NO_ID',
@@ -364,7 +353,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       );
 
       if (rowsAffected == 0) {
-        throw LocalStorageException(
+        throw DataBaseLocalException(
           message: 'Exercício não encontrado',
           technicalMessage: 'No exercise updated with id=${exerciseDbModel.exerciseId}',
           code: 'SQLITE_UPDATE_EXERCISE_NOT_FOUND',
@@ -374,14 +363,12 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       final ExerciseDbModel updatedExercise = await readExercise(exerciseId: exerciseDbModel.exerciseId!);
 
       return updatedExercise;
-    } on LocalStorageException {
+    } on DataBaseLocalException {
       rethrow;
     } catch (e, s) {
       final technical = '$e\n$s';
 
-      debugPrint(technical);
-
-      throw LocalStorageException(
+      throw DataBaseLocalException(
         message: 'Erro ao atualizar o exercício',
         technicalMessage: technical,
         code: 'SQLITE_UPDATE_EXERCISE',
@@ -395,7 +382,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
   }) async {
     try {
       if (workoutDbModel.workoutId == null) {
-        throw LocalStorageException(
+        throw DataBaseLocalException(
           message: 'Não é possível atualizar um treino sem id',
           technicalMessage: 'exerciseId was null when calling updateWorkout',
           code: 'SQLITE_UPDATE_WORKOUT_NO_ID',
@@ -415,7 +402,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       );
 
       if (rowsAffected == 0) {
-        throw LocalStorageException(
+        throw DataBaseLocalException(
           message: 'Treino não encontrado',
           technicalMessage: 'No workout updated with id=${workoutDbModel.workoutId}',
           code: 'SQLITE_UPDATE_WORKOUT_NOT_FOUND',
@@ -425,14 +412,12 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       final WorkoutDbModel updatedWorkout = await readWorkout(workoutId: workoutDbModel.workoutId!);
 
       return updatedWorkout;
-    } on LocalStorageException {
+    } on DataBaseLocalException {
       rethrow;
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
-      throw LocalStorageException(
+      throw DataBaseLocalException(
         message: 'Erro ao atualizar o treino',
         technicalMessage: technical,
         code: 'SQLITE_UPDATE_WORKOUT',
@@ -452,7 +437,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       );
 
       if (rowsAffected == 0) {
-        throw LocalStorageException(
+        throw DataBaseLocalException(
           message: 'Exercício não encontrado',
           technicalMessage: 'No exercise deleted with id=$exerciseId',
           code: 'SQLITE_DELETE_EXERCISE_NOT_FOUND',
@@ -461,9 +446,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final technical = '$e\n$s';
 
-      debugPrint(technical);
-
-      throw LocalStorageException(
+      throw DataBaseLocalException(
         message: 'Erro ao deletar o exercício',
         technicalMessage: technical,
         code: 'SQLITE_DELETE_EXERCISE',
@@ -486,7 +469,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       );
 
       if (rowsAffected == 0) {
-        throw LocalStorageException(
+        throw DataBaseLocalException(
           message: 'Treino não encontrado',
           technicalMessage: 'No workout deleted with id=$workoutId',
           code: 'SQLITE_DELETE_WORKOUT_NOT_FOUND',
@@ -495,9 +478,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     } catch (e, s) {
       final String technical = '$e\n$s';
 
-      debugPrint(technical);
-
-      throw LocalStorageException(
+      throw DataBaseLocalException(
         message: 'Erro ao deletar o treino',
         technicalMessage: technical,
         code: 'SQLITE_DELETE_WORKOUT',
