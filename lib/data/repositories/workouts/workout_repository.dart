@@ -335,6 +335,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
       }
 
       _workouts[index] = newWorkout;
+      _currentWorkout = newWorkout;
       return Success(newWorkout);
     } on DataBaseLocalException catch (e) {
       debugPrint('[${e.code}] ${e.message}');

@@ -9,3 +9,11 @@ extension StringExtensions on String {
         .join(' ');
   }
 }
+
+extension NumberParsing on String {
+  /// Converte para inteiro, retornando `null` se o texto não for um número válido.
+  int? toIntOrNull() => int.tryParse(trim());
+
+  /// Converte para double aceitando vírgula ou ponto como separador decimal.
+  double? toDoubleOrNull() => double.tryParse(trim().replaceAll(',', '.'));
+}

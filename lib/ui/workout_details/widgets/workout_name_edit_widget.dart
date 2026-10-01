@@ -31,40 +31,38 @@ class _WorkoutNameEditWidgetState extends State<WorkoutNameEditWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading =
-        widget.viewModel.updateWorkout.value.isRunning ||
-        widget.viewModel.loadCurrentWorkout.value.isRunning;
+    return ListenableBuilder(
+      listenable: widget.viewModel.updateWorkout,
+      builder: (context, _) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              decoration: const InputDecoration(labelText: 'Nome do treino'),
+              controller: _controller,
+            ),
+            const SizedBox(height: 16),
+            BottomSheetActions(
+              isLoading: widget.viewModel.updateWorkout.value.isRunning,
+              onSave: () async {
+                if (_controller.text.trim().isEmpty) {
+                  return;
+                }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        TextField(
-          decoration: const InputDecoration(labelText: 'Nome do treino'),
-          controller: _controller,
-        ),
-        const SizedBox(height: 16),
-        BottomSheetActions(
-          isLoading: isLoading,
-          onSave: () async {
-            if (_controller.text.trim().isEmpty) {
-              return;
-            }
-
-            Workout newWorkout = widget.viewModel.workout!.copyWith(
-              workoutName: _controller.text,
-            );
-            await widget.viewModel.updateWorkout.execute(newWorkout);
-            if (widget.viewModel.updateWorkout.value.isSuccess) {
-              await widget.viewModel.loadCurrentWorkout.execute(newWorkout);
-            }
-            if (!context.mounted) return;
-            if (widget.viewModel.updateWorkout.value.isSuccess) {
-              Navigator.of(context).pop();
-            }
-          },
-          onCancel: () => Navigator.of(context).pop(),
-        ),
-      ],
+                Workout newWorkout = widget.viewModel.workout!.copyWith(
+                  workoutName: _controller.text,
+                );
+                await widget.viewModel.updateWorkout.execute(newWorkout);
+                if (!context.mounted) return;
+                if (widget.viewModel.updateWorkout.value.isSuccess) {
+                  Navigator.of(context).pop();
+                }
+              },
+              onCancel: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
     );
   }
 }
