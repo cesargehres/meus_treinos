@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
-import 'package:meus_treinos/ui/shared/exercise_notes_button.dart';
 import 'package:meus_treinos/ui/workout_day/view_model/workout_day_view_model.dart';
 import 'package:meus_treinos/utils/int_extensions.dart';
 import 'package:meus_treinos/utils/string_extensions.dart';
@@ -124,15 +123,21 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                                       color: textColor,
                                     ),
                                   ),
+                                  if (exercise.notes != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Text(
+                                        exercise.notes!,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: textColor,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
-                            if (exercise.notes != null)
-                              ExerciseNotesButton(
-                                exerciseName: exercise.exerciseName,
-                                notes: exercise.notes!,
-                                color: textColor,
-                              ),
                           ],
                         ),
                       ),
