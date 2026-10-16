@@ -8,6 +8,10 @@ abstract interface class WorkoutRepositoryInterface {
   Future<Result<Workout>> createWorkout({required Workout workout});
   Future<Result<Exercise>> createExercise({required Exercise exercise});
   Future<Result<Exercise>> updateExercise({required Exercise exercise});
+  Future<Result<Unit>> reorderExercises({
+    required int workoutId,
+    required List<Exercise> exercises,
+  });
   Future<Result<Workout>> updateWorkout({required Workout workout});
   Future<Result<Unit>> deleteExercise({required Exercise exercise});
   Future<Result<Unit>> loadCurrentWorkout(Workout workout);

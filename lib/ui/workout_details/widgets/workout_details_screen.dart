@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
 import 'package:meus_treinos/ui/shared/app_bottom_sheet.dart';
@@ -6,6 +7,7 @@ import 'package:meus_treinos/ui/shared/app_dialogs.dart';
 import 'package:meus_treinos/ui/workout_details/view_model/workout_details_view_model.dart';
 import 'package:meus_treinos/ui/workout_details/widgets/exercise_edit_widget.dart';
 import 'package:meus_treinos/ui/workout_details/widgets/workout_name_edit_widget.dart';
+import 'package:meus_treinos/utils/int_extensions.dart';
 import 'package:meus_treinos/utils/string_extensions.dart';
 
 class WorkoutDetailsScreen extends StatefulWidget {
@@ -80,43 +82,93 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                     MediaQuery.of(context).size.height *
                     (!_modalOpen ? 0.1 : 0.42),
               ),
-              child: SingleChildScrollView(
-                child: Column(
-                  spacing: 8,
-                  children: [
-                    for (Exercise exercise
-                        in widget.viewModel.workout!.exercises)
-                      _buildExerciseCard(context, exercise, textColor),
-                  ],
-                ),
-              ),
+              child: _buildExerciseList(context, textColor),
             ),
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: Transform.translate(
-            offset: const Offset(0, 8),
-            child: FloatingActionButton.extended(
-              onPressed: () {
-                _showCreateExerciseSheet(context);
-              },
-              tooltip: "Adicionar exercício",
-              backgroundColor: Colors.green,
-              label: Row(
-                spacing: 8,
-                children: [
-                  Text(
-                    'Adicionar exercício',
-                    style: TextStyle(color: textColor),
+          // Some enquanto o formulário de adicionar ou editar está aberto.
+          floatingActionButton: _modalOpen
+              ? null
+              : Transform.translate(
+                  offset: const Offset(0, 8),
+                  child: FloatingActionButton.extended(
+                    onPressed: () {
+                      _showCreateExerciseSheet(context);
+                    },
+                    tooltip: "Adicionar exercício",
+                    backgroundColor: Colors.green,
+                    label: Row(
+                      spacing: 8,
+                      children: [
+                        Text(
+                          'Adicionar exercício',
+                          style: TextStyle(color: textColor),
+                        ),
+                        Icon(
+                          Icons.add,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ],
+                    ),
                   ),
-                  Icon(
-                    Icons.add,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ],
+                ),
+        );
+      },
+    );
+  }
+
+  Widget _buildExerciseList(BuildContext context, Color textColor) {
+    final List<Exercise> exercises = widget.viewModel.workout!.exercises;
+
+    return ReorderableListView.builder(
+      header: exercises.length > 1
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                'Segure e arraste um exercício para mudar a ordem',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            )
+          : null,
+      itemCount: exercises.length,
+      // onReorder está obsoleto desde o Flutter 3.41, mas o substituto
+      // (onReorderItem) não existe no Flutter 3.35, versão mínima do projeto.
+      // ignore: deprecated_member_use
+      onReorder: widget.viewModel.reorderExercise.execute,
+      // Vibra ao pegar o card, para a pessoa sentir que ele pode ser movido.
+      onReorderStart: (_) => HapticFeedback.mediumImpact(),
+      // Ao ser pego, o card cresce e ganha uma sombra forte. Só o card é
+      // elevado; o padrão elevaria junto o espaço abaixo dele.
+      proxyDecorator: (_, index, animation) => AnimatedBuilder(
+        animation: animation,
+        builder: (context, _) {
+          final double lift = Curves.easeOut.transform(animation.value);
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Transform.scale(
+              scale: 1 + 0.05 * lift,
+              child: Material(
+                elevation: 16 * lift,
+                child: _buildExerciseCard(context, exercises[index], textColor),
               ),
             ),
-          ),
+          );
+        },
+      ),
+      // Usa o context da tela (e não o do item) para os formulários abrirem
+      // no mesmo Scaffold do "Adicionar exercício".
+      itemBuilder: (_, index) {
+        final Exercise exercise = exercises[index];
+
+        return Padding(
+          key: ValueKey(exercise.exerciseId),
+          padding: const EdgeInsets.only(bottom: 8),
+          child: _buildExerciseCard(context, exercise, textColor),
         );
       },
     );
@@ -127,6 +179,12 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
     Exercise exercise,
     Color textColor,
   ) {
+    final TextStyle notesStyle = TextStyle(
+      fontSize: 12,
+      color: textColor,
+      fontStyle: FontStyle.italic,
+    );
+
     return Container(
       padding: const EdgeInsets.all(8),
       color: Theme.of(context).colorScheme.primary,
@@ -157,6 +215,24 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                       textColor,
                     ),
                     _infoLabel('Peso: ', exercise.weight.toString(), textColor),
+                  ],
+                ),
+                Text(
+                  'Descanso: ${formatRestRange(exercise.restMinSeconds, exercise.restMaxSeconds)}',
+                  style: TextStyle(fontSize: 12, color: textColor),
+                ),
+                // Reserva sempre duas linhas para a observação, para todos os
+                // cards terem o mesmo tamanho, com ou sem observação.
+                Stack(
+                  children: [
+                    Text('\n', style: notesStyle),
+                    if (exercise.notes != null)
+                      Text(
+                        exercise.notes!,
+                        style: notesStyle,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
                   ],
                 ),
               ],
@@ -242,6 +318,9 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
           series: 3,
           repeats: 12,
           weight: 20,
+          restMinSeconds: 45,
+          restMaxSeconds: 60,
+          notes: null,
         ),
         onSave: widget.viewModel.createExercise,
       ),

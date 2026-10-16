@@ -29,6 +29,9 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
           series: exercise.series,
           repeats: exercise.repeats,
           weight: exercise.weight,
+          restMinSeconds: exercise.restMinSeconds,
+          restMaxSeconds: exercise.restMaxSeconds,
+          notes: exercise.notes,
         ),
       );
 
@@ -39,6 +42,9 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         series: result.series,
         repeats: result.repeats,
         weight: result.weight,
+        restMinSeconds: result.restMinSeconds,
+        restMaxSeconds: result.restMaxSeconds,
+        notes: result.notes,
       );
 
       for (int index = 0; index < _workouts.length; index++) {
@@ -119,6 +125,9 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
           series: exerciseDbModel.series,
           repeats: exerciseDbModel.repeats,
           weight: exerciseDbModel.weight,
+          restMinSeconds: exerciseDbModel.restMinSeconds,
+          restMaxSeconds: exerciseDbModel.restMaxSeconds,
+          notes: exerciseDbModel.notes,
         );
       }).toList();
 
@@ -162,6 +171,9 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
             series: exerciseDbModel.series,
             repeats: exerciseDbModel.repeats,
             weight: exerciseDbModel.weight,
+            restMinSeconds: exerciseDbModel.restMinSeconds,
+            restMaxSeconds: exerciseDbModel.restMaxSeconds,
+            notes: exerciseDbModel.notes,
           );
         }).toList();
 
@@ -194,6 +206,9 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
               series: exercise.series,
               repeats: exercise.repeats,
               weight: exercise.weight,
+              restMinSeconds: exercise.restMinSeconds,
+              restMaxSeconds: exercise.restMaxSeconds,
+              notes: exercise.notes,
             ),
           );
 
@@ -204,6 +219,9 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         series: exerciseDbModel.series,
         repeats: exerciseDbModel.repeats,
         weight: exerciseDbModel.weight,
+        restMinSeconds: exerciseDbModel.restMinSeconds,
+        restMaxSeconds: exerciseDbModel.restMaxSeconds,
+        notes: exerciseDbModel.notes,
       );
 
       final workoutIndex = _workouts.indexWhere(
@@ -243,6 +261,48 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     } catch (e) {
       debugPrint(e.toString());
 
+      return Failure(Exception('Houve um erro inesperado!'));
+    }
+  }
+
+  @override
+  Future<Result<Unit>> reorderExercises({
+    required int workoutId,
+    required List<Exercise> exercises,
+  }) async {
+    final workoutIndex = _workouts.indexWhere(
+      (workout) => workout.workoutId == workoutId,
+    );
+
+    if (workoutIndex == -1) {
+      return Failure(Exception('Treino não encontrado no cache'));
+    }
+
+    // Atualiza o cache antes de gravar, para a lista não voltar à ordem
+    // antiga enquanto o banco salva. Se der erro, a ordem antiga é restaurada.
+    final Workout previousWorkout = _workouts[workoutIndex];
+    _workouts[workoutIndex] = previousWorkout.copyWith(exercises: exercises);
+    _currentWorkout = _workouts[workoutIndex];
+
+    try {
+      await _dataBaseLocal.updateExercisesOrder(
+        workoutId: workoutId,
+        exerciseIds: exercises.map((exercise) => exercise.exerciseId!).toList(),
+      );
+
+      return Success(unit);
+    } on DataBaseLocalException catch (e) {
+      debugPrint('[${e.code}] ${e.message}');
+      debugPrint(e.technicalMessage);
+
+      _workouts[workoutIndex] = previousWorkout;
+      _currentWorkout = previousWorkout;
+      return Failure(e);
+    } catch (e) {
+      debugPrint(e.toString());
+
+      _workouts[workoutIndex] = previousWorkout;
+      _currentWorkout = previousWorkout;
       return Failure(Exception('Houve um erro inesperado!'));
     }
   }
@@ -318,6 +378,9 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
             series: exerciseInResult.series,
             repeats: exerciseInResult.repeats,
             weight: exerciseInResult.weight,
+            restMinSeconds: exerciseInResult.restMinSeconds,
+            restMaxSeconds: exerciseInResult.restMaxSeconds,
+            notes: exerciseInResult.notes,
           ),
         );
       }

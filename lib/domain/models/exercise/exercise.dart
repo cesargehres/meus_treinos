@@ -11,6 +11,9 @@ abstract class Exercise with _$Exercise {
     required String exerciseName,
     required int series,
     required int repeats,
-    required double weight
+    required double weight,
+    required int? restMinSeconds,
+    required int? restMaxSeconds,
+    required String? notes,
   }) = _Exercise;
 }

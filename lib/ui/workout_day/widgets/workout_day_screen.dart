@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
 import 'package:meus_treinos/ui/workout_day/view_model/workout_day_view_model.dart';
+import 'package:meus_treinos/utils/int_extensions.dart';
 import 'package:meus_treinos/utils/string_extensions.dart';
 
 class WorkoutDayScreen extends StatefulWidget {
@@ -115,6 +116,25 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                                       ),
                                     ],
                                   ),
+                                  Text(
+                                    'Descanso: ${formatRestRange(exercise.restMinSeconds, exercise.restMaxSeconds)}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: textColor,
+                                    ),
+                                  ),
+                                  if (exercise.notes != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Text(
+                                        exercise.notes!,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: textColor,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),

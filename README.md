@@ -1,6 +1,6 @@
 # Meus Treinos
 
-App mobile em Flutter para organizar a rotina de musculação da semana. Cada dia tem um treino, cada treino tem seus exercícios (séries, repetições e carga), e a tela inicial já mostra o treino do dia. Tudo funciona offline, com os dados salvos localmente em SQLite.
+App mobile em Flutter para organizar a rotina de musculação da semana. Cada dia tem um treino, cada treino tem seus exercícios (séries, repetições, carga, descanso e observações), e a tela inicial já mostra o treino do dia. Tudo funciona offline, com os dados salvos localmente em SQLite.
 
 **Repositório:** [github.com/cesargehres/meus_treinos](https://github.com/cesargehres/meus_treinos)
 
@@ -16,8 +16,11 @@ App mobile em Flutter para organizar a rotina de musculação da semana. Cada di
 - **Treino do dia:** ao abrir o app, mostra o treino do dia da semana atual com a lista de exercícios.
 - **Planejamento semanal:** um treino para cada dia, de segunda a domingo, criado automaticamente.
 - **Gerenciamento de exercícios:** adicionar, editar e excluir exercícios, com confirmação antes de excluir.
+- **Descanso:** cada exercício tem uma faixa de descanso obrigatória, com mínimo e máximo em segundos (exibida como `45 a 60s`). Exercícios salvos antes dessa versão aparecem como "Não definido" até serem editados.
+- **Observações:** até 150 caracteres por exercício, como ajuste do aparelho ou cuidados na execução. Aparecem por inteiro no Treino do dia, sem precisar tocar em nada durante o treino, e resumidas em até 2 linhas na tela de detalhes.
+- **Ordem dos exercícios:** na tela de detalhes do treino, segure um exercício e arraste para mudar a ordem. O Treino do dia segue a mesma ordem.
 - **Renomear treinos:** por exemplo, "Peito e Tríceps" ou "Pernas".
-- **Validação de formulário:** aceita peso com vírgula ou ponto (`20,5` ou `20.5`).
+- **Validação de formulário:** aceita peso com vírgula ou ponto (`20,5` ou `20.5`) e não deixa o descanso máximo ser menor que o mínimo.
 - **100% offline:** persistência local com SQLite.
 
 ## Tecnologias
@@ -64,6 +67,7 @@ flowchart LR
 - **Exceções tipadas na camada de dados:** a `DataBaseLocalException` carrega uma mensagem para o usuário, uma mensagem técnica para log e um `code` (ex: `SQLITE_DELETE_EXERCISE_NOT_FOUND`).
 - **Modelos de banco separados dos de domínio:** `WorkoutDbModel` e `Workout` evoluem de forma independente, e a UI não depende do formato das tabelas.
 - **Integridade no banco:** chaves estrangeiras habilitadas (`PRAGMA foreign_keys`) e `ON DELETE CASCADE` entre treinos e exercícios.
+- **Migração do banco:** o banco está na versão 2. Quem já usava o app recebe as colunas novas (descanso, observações e ordem dos exercícios) pelo `onUpgrade`, sem perder treinos e exercícios.
 
 ### Estrutura de pastas
 
@@ -82,7 +86,7 @@ lib/
 │   ├── workout_day/             # Tela "Treino do Dia"
 │   ├── workouts_manager/        # Tela "Meus Treinos"
 │   └── workout_details/         # Detalhes e edição de um treino
-└── utils/                       # Extensões de String
+└── utils/                       # Extensões de String e de int
 ```
 
 Cada feature em `ui/` tem uma pasta `view_model/` e uma pasta `widgets/`.

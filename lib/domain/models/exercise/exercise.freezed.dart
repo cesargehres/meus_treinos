@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Exercise implements DiagnosticableTreeMixin {
 
- int? get exerciseId; int get workoutId; String get exerciseName; int get series; int get repeats; double get weight;
+ int? get exerciseId; int get workoutId; String get exerciseName; int get series; int get repeats; double get weight; int? get restMinSeconds; int? get restMaxSeconds; String? get notes;
 /// Create a copy of Exercise
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,21 +26,21 @@ $ExerciseCopyWith<Exercise> get copyWith => _$ExerciseCopyWithImpl<Exercise>(thi
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'Exercise'))
-    ..add(DiagnosticsProperty('exerciseId', exerciseId))..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('exerciseName', exerciseName))..add(DiagnosticsProperty('series', series))..add(DiagnosticsProperty('repeats', repeats))..add(DiagnosticsProperty('weight', weight));
+    ..add(DiagnosticsProperty('exerciseId', exerciseId))..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('exerciseName', exerciseName))..add(DiagnosticsProperty('series', series))..add(DiagnosticsProperty('repeats', repeats))..add(DiagnosticsProperty('weight', weight))..add(DiagnosticsProperty('restMinSeconds', restMinSeconds))..add(DiagnosticsProperty('restMaxSeconds', restMaxSeconds))..add(DiagnosticsProperty('notes', notes));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Exercise&&(identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.exerciseName, exerciseName) || other.exerciseName == exerciseName)&&(identical(other.series, series) || other.series == series)&&(identical(other.repeats, repeats) || other.repeats == repeats)&&(identical(other.weight, weight) || other.weight == weight));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Exercise&&(identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.exerciseName, exerciseName) || other.exerciseName == exerciseName)&&(identical(other.series, series) || other.series == series)&&(identical(other.repeats, repeats) || other.repeats == repeats)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.restMinSeconds, restMinSeconds) || other.restMinSeconds == restMinSeconds)&&(identical(other.restMaxSeconds, restMaxSeconds) || other.restMaxSeconds == restMaxSeconds)&&(identical(other.notes, notes) || other.notes == notes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,exerciseId,workoutId,exerciseName,series,repeats,weight);
+int get hashCode => Object.hash(runtimeType,exerciseId,workoutId,exerciseName,series,repeats,weight,restMinSeconds,restMaxSeconds,notes);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Exercise(exerciseId: $exerciseId, workoutId: $workoutId, exerciseName: $exerciseName, series: $series, repeats: $repeats, weight: $weight)';
+  return 'Exercise(exerciseId: $exerciseId, workoutId: $workoutId, exerciseName: $exerciseName, series: $series, repeats: $repeats, weight: $weight, restMinSeconds: $restMinSeconds, restMaxSeconds: $restMaxSeconds, notes: $notes)';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $ExerciseCopyWith<$Res>  {
   factory $ExerciseCopyWith(Exercise value, $Res Function(Exercise) _then) = _$ExerciseCopyWithImpl;
 @useResult
 $Res call({
- int? exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight
+ int? exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight, int? restMinSeconds, int? restMaxSeconds, String? notes
 });
 
 
@@ -68,7 +68,7 @@ class _$ExerciseCopyWithImpl<$Res>
 
 /// Create a copy of Exercise
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? exerciseId = freezed,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? exerciseId = freezed,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,Object? restMinSeconds = freezed,Object? restMaxSeconds = freezed,Object? notes = freezed,}) {
   return _then(_self.copyWith(
 exerciseId: freezed == exerciseId ? _self.exerciseId : exerciseId // ignore: cast_nullable_to_non_nullable
 as int?,workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
@@ -76,7 +76,10 @@ as int,exerciseName: null == exerciseName ? _self.exerciseName : exerciseName //
 as String,series: null == series ? _self.series : series // ignore: cast_nullable_to_non_nullable
 as int,repeats: null == repeats ? _self.repeats : repeats // ignore: cast_nullable_to_non_nullable
 as int,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
-as double,
+as double,restMinSeconds: freezed == restMinSeconds ? _self.restMinSeconds : restMinSeconds // ignore: cast_nullable_to_non_nullable
+as int?,restMaxSeconds: freezed == restMaxSeconds ? _self.restMaxSeconds : restMaxSeconds // ignore: cast_nullable_to_non_nullable
+as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -161,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight,  int? restMinSeconds,  int? restMaxSeconds,  String? notes)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Exercise() when $default != null:
-return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight);case _:
+return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight,_that.restMinSeconds,_that.restMaxSeconds,_that.notes);case _:
   return orElse();
 
 }
@@ -182,10 +185,10 @@ return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight,  int? restMinSeconds,  int? restMaxSeconds,  String? notes)  $default,) {final _that = this;
 switch (_that) {
 case _Exercise():
-return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight);case _:
+return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight,_that.restMinSeconds,_that.restMaxSeconds,_that.notes);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +205,10 @@ return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight,  int? restMinSeconds,  int? restMaxSeconds,  String? notes)?  $default,) {final _that = this;
 switch (_that) {
 case _Exercise() when $default != null:
-return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight);case _:
+return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight,_that.restMinSeconds,_that.restMaxSeconds,_that.notes);case _:
   return null;
 
 }
@@ -217,7 +220,7 @@ return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series
 
 
 class _Exercise with DiagnosticableTreeMixin implements Exercise {
-   _Exercise({this.exerciseId, required this.workoutId, required this.exerciseName, required this.series, required this.repeats, required this.weight});
+   _Exercise({this.exerciseId, required this.workoutId, required this.exerciseName, required this.series, required this.repeats, required this.weight, required this.restMinSeconds, required this.restMaxSeconds, required this.notes});
   
 
 @override final  int? exerciseId;
@@ -226,6 +229,9 @@ class _Exercise with DiagnosticableTreeMixin implements Exercise {
 @override final  int series;
 @override final  int repeats;
 @override final  double weight;
+@override final  int? restMinSeconds;
+@override final  int? restMaxSeconds;
+@override final  String? notes;
 
 /// Create a copy of Exercise
 /// with the given fields replaced by the non-null parameter values.
@@ -238,21 +244,21 @@ _$ExerciseCopyWith<_Exercise> get copyWith => __$ExerciseCopyWithImpl<_Exercise>
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'Exercise'))
-    ..add(DiagnosticsProperty('exerciseId', exerciseId))..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('exerciseName', exerciseName))..add(DiagnosticsProperty('series', series))..add(DiagnosticsProperty('repeats', repeats))..add(DiagnosticsProperty('weight', weight));
+    ..add(DiagnosticsProperty('exerciseId', exerciseId))..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('exerciseName', exerciseName))..add(DiagnosticsProperty('series', series))..add(DiagnosticsProperty('repeats', repeats))..add(DiagnosticsProperty('weight', weight))..add(DiagnosticsProperty('restMinSeconds', restMinSeconds))..add(DiagnosticsProperty('restMaxSeconds', restMaxSeconds))..add(DiagnosticsProperty('notes', notes));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Exercise&&(identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.exerciseName, exerciseName) || other.exerciseName == exerciseName)&&(identical(other.series, series) || other.series == series)&&(identical(other.repeats, repeats) || other.repeats == repeats)&&(identical(other.weight, weight) || other.weight == weight));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Exercise&&(identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.exerciseName, exerciseName) || other.exerciseName == exerciseName)&&(identical(other.series, series) || other.series == series)&&(identical(other.repeats, repeats) || other.repeats == repeats)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.restMinSeconds, restMinSeconds) || other.restMinSeconds == restMinSeconds)&&(identical(other.restMaxSeconds, restMaxSeconds) || other.restMaxSeconds == restMaxSeconds)&&(identical(other.notes, notes) || other.notes == notes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,exerciseId,workoutId,exerciseName,series,repeats,weight);
+int get hashCode => Object.hash(runtimeType,exerciseId,workoutId,exerciseName,series,repeats,weight,restMinSeconds,restMaxSeconds,notes);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Exercise(exerciseId: $exerciseId, workoutId: $workoutId, exerciseName: $exerciseName, series: $series, repeats: $repeats, weight: $weight)';
+  return 'Exercise(exerciseId: $exerciseId, workoutId: $workoutId, exerciseName: $exerciseName, series: $series, repeats: $repeats, weight: $weight, restMinSeconds: $restMinSeconds, restMaxSeconds: $restMaxSeconds, notes: $notes)';
 }
 
 
@@ -263,7 +269,7 @@ abstract mixin class _$ExerciseCopyWith<$Res> implements $ExerciseCopyWith<$Res>
   factory _$ExerciseCopyWith(_Exercise value, $Res Function(_Exercise) _then) = __$ExerciseCopyWithImpl;
 @override @useResult
 $Res call({
- int? exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight
+ int? exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight, int? restMinSeconds, int? restMaxSeconds, String? notes
 });
 
 
@@ -280,7 +286,7 @@ class __$ExerciseCopyWithImpl<$Res>
 
 /// Create a copy of Exercise
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? exerciseId = freezed,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? exerciseId = freezed,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,Object? restMinSeconds = freezed,Object? restMaxSeconds = freezed,Object? notes = freezed,}) {
   return _then(_Exercise(
 exerciseId: freezed == exerciseId ? _self.exerciseId : exerciseId // ignore: cast_nullable_to_non_nullable
 as int?,workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
@@ -288,7 +294,10 @@ as int,exerciseName: null == exerciseName ? _self.exerciseName : exerciseName //
 as String,series: null == series ? _self.series : series // ignore: cast_nullable_to_non_nullable
 as int,repeats: null == repeats ? _self.repeats : repeats // ignore: cast_nullable_to_non_nullable
 as int,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
-as double,
+as double,restMinSeconds: freezed == restMinSeconds ? _self.restMinSeconds : restMinSeconds // ignore: cast_nullable_to_non_nullable
+as int?,restMaxSeconds: freezed == restMaxSeconds ? _self.restMaxSeconds : restMaxSeconds // ignore: cast_nullable_to_non_nullable
+as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
