@@ -29,6 +29,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
           series: exercise.series,
           repeats: exercise.repeats,
           weight: exercise.weight,
+          restSeconds: exercise.restSeconds,
+          notes: exercise.notes,
         ),
       );
 
@@ -39,6 +41,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         series: result.series,
         repeats: result.repeats,
         weight: result.weight,
+        restSeconds: result.restSeconds,
+        notes: result.notes,
       );
 
       for (int index = 0; index < _workouts.length; index++) {
@@ -119,6 +123,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
           series: exerciseDbModel.series,
           repeats: exerciseDbModel.repeats,
           weight: exerciseDbModel.weight,
+          restSeconds: exerciseDbModel.restSeconds,
+          notes: exerciseDbModel.notes,
         );
       }).toList();
 
@@ -162,6 +168,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
             series: exerciseDbModel.series,
             repeats: exerciseDbModel.repeats,
             weight: exerciseDbModel.weight,
+            restSeconds: exerciseDbModel.restSeconds,
+            notes: exerciseDbModel.notes,
           );
         }).toList();
 
@@ -194,6 +202,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
               series: exercise.series,
               repeats: exercise.repeats,
               weight: exercise.weight,
+              restSeconds: exercise.restSeconds,
+              notes: exercise.notes,
             ),
           );
 
@@ -204,6 +214,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         series: exerciseDbModel.series,
         repeats: exerciseDbModel.repeats,
         weight: exerciseDbModel.weight,
+        restSeconds: exerciseDbModel.restSeconds,
+        notes: exerciseDbModel.notes,
       );
 
       final workoutIndex = _workouts.indexWhere(
@@ -318,6 +330,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
             series: exerciseInResult.series,
             repeats: exerciseInResult.repeats,
             weight: exerciseInResult.weight,
+            restSeconds: exerciseInResult.restSeconds,
+            notes: exerciseInResult.notes,
           ),
         );
       }

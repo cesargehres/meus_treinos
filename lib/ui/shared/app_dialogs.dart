@@ -65,3 +65,25 @@ void showErrorSnackBar(BuildContext context, String message) {
       ),
     );
 }
+
+/// Exibe um diálogo informativo padronizado, apenas com o botão de fechar.
+Future<void> showInfoDialog(
+  BuildContext context, {
+  required String title,
+  required String message,
+  String closeLabel = 'Fechar',
+}) {
+  return showDialog<void>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(title),
+      content: SingleChildScrollView(child: Text(message)),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(closeLabel),
+        ),
+      ],
+    ),
+  );
+}

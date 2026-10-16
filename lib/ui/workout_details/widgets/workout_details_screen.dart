@@ -6,6 +6,7 @@ import 'package:meus_treinos/ui/shared/app_dialogs.dart';
 import 'package:meus_treinos/ui/workout_details/view_model/workout_details_view_model.dart';
 import 'package:meus_treinos/ui/workout_details/widgets/exercise_edit_widget.dart';
 import 'package:meus_treinos/ui/workout_details/widgets/workout_name_edit_widget.dart';
+import 'package:meus_treinos/utils/int_extensions.dart';
 import 'package:meus_treinos/utils/string_extensions.dart';
 
 class WorkoutDetailsScreen extends StatefulWidget {
@@ -159,6 +160,10 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                     _infoLabel('Peso: ', exercise.weight.toString(), textColor),
                   ],
                 ),
+                Text(
+                  'Descanso: ${exercise.restSeconds?.restTime ?? 'Não definido'}',
+                  style: TextStyle(fontSize: 12, color: textColor),
+                ),
               ],
             ),
           ),
@@ -242,6 +247,8 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
           series: 3,
           repeats: 12,
           weight: 20,
+          restSeconds: 60,
+          notes: null,
         ),
         onSave: widget.viewModel.createExercise,
       ),

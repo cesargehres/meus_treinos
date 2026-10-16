@@ -27,6 +27,9 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
       TextEditingController();
   final TextEditingController _exerciseWeightController =
       TextEditingController();
+  final TextEditingController _exerciseRestController = TextEditingController();
+  final TextEditingController _exerciseNotesController =
+      TextEditingController();
 
   String? _errorMessage;
 
@@ -37,6 +40,9 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
     _exerciseSeriesController.text = widget.exercise.series.toString();
     _exerciseRepeatsController.text = widget.exercise.repeats.toString();
     _exerciseWeightController.text = widget.exercise.weight.toString();
+    _exerciseRestController.text =
+        widget.exercise.restSeconds?.toString() ?? '';
+    _exerciseNotesController.text = widget.exercise.notes ?? '';
   }
 
   @override
@@ -45,6 +51,8 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
     _exerciseSeriesController.dispose();
     _exerciseRepeatsController.dispose();
     _exerciseWeightController.dispose();
+    _exerciseRestController.dispose();
+    _exerciseNotesController.dispose();
     super.dispose();
   }
 
@@ -81,6 +89,21 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
                   ),
                   controller: _exerciseWeightController,
                 ),
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Descanso (segundos)',
+                  ),
+                  keyboardType: TextInputType.number,
+                  controller: _exerciseRestController,
+                ),
+                TextField(
+                  decoration: const InputDecoration(labelText: 'Observações'),
+                  keyboardType: TextInputType.multiline,
+                  textCapitalization: TextCapitalization.sentences,
+                  minLines: 1,
+                  maxLines: 3,
+                  controller: _exerciseNotesController,
+                ),
                 if (_errorMessage != null) ...[
                   const SizedBox(height: 12),
                   Text(
@@ -109,6 +132,8 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
     final series = _exerciseSeriesController.text.toIntOrNull();
     final repeats = _exerciseRepeatsController.text.toIntOrNull();
     final weight = _exerciseWeightController.text.toDoubleOrNull();
+    final restSeconds = _exerciseRestController.text.toIntOrNull();
+    final notes = _exerciseNotesController.text.trim();
 
     if (name.isEmpty) {
       setState(() => _errorMessage = 'Informe o nome do exercício');
@@ -127,6 +152,13 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
       return;
     }
 
+    if (restSeconds == null || restSeconds < 0) {
+      setState(
+        () => _errorMessage = 'Informe o descanso em segundos (ex: 60 ou 90)',
+      );
+      return;
+    }
+
     setState(() => _errorMessage = null);
 
     await widget.onSave.execute(
@@ -137,6 +169,8 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
         series: series,
         repeats: repeats,
         weight: weight,
+        restSeconds: restSeconds,
+        notes: notes.isEmpty ? null : notes,
       ),
     );
 
