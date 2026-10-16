@@ -29,7 +29,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
           series: exercise.series,
           repeats: exercise.repeats,
           weight: exercise.weight,
-          restSeconds: exercise.restSeconds,
+          restMinSeconds: exercise.restMinSeconds,
+          restMaxSeconds: exercise.restMaxSeconds,
           notes: exercise.notes,
         ),
       );
@@ -41,7 +42,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         series: result.series,
         repeats: result.repeats,
         weight: result.weight,
-        restSeconds: result.restSeconds,
+        restMinSeconds: result.restMinSeconds,
+        restMaxSeconds: result.restMaxSeconds,
         notes: result.notes,
       );
 
@@ -123,7 +125,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
           series: exerciseDbModel.series,
           repeats: exerciseDbModel.repeats,
           weight: exerciseDbModel.weight,
-          restSeconds: exerciseDbModel.restSeconds,
+          restMinSeconds: exerciseDbModel.restMinSeconds,
+          restMaxSeconds: exerciseDbModel.restMaxSeconds,
           notes: exerciseDbModel.notes,
         );
       }).toList();
@@ -168,7 +171,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
             series: exerciseDbModel.series,
             repeats: exerciseDbModel.repeats,
             weight: exerciseDbModel.weight,
-            restSeconds: exerciseDbModel.restSeconds,
+            restMinSeconds: exerciseDbModel.restMinSeconds,
+            restMaxSeconds: exerciseDbModel.restMaxSeconds,
             notes: exerciseDbModel.notes,
           );
         }).toList();
@@ -202,7 +206,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
               series: exercise.series,
               repeats: exercise.repeats,
               weight: exercise.weight,
-              restSeconds: exercise.restSeconds,
+              restMinSeconds: exercise.restMinSeconds,
+              restMaxSeconds: exercise.restMaxSeconds,
               notes: exercise.notes,
             ),
           );
@@ -214,7 +219,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
         series: exerciseDbModel.series,
         repeats: exerciseDbModel.repeats,
         weight: exerciseDbModel.weight,
-        restSeconds: exerciseDbModel.restSeconds,
+        restMinSeconds: exerciseDbModel.restMinSeconds,
+        restMaxSeconds: exerciseDbModel.restMaxSeconds,
         notes: exerciseDbModel.notes,
       );
 
@@ -330,7 +336,8 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
             series: exerciseInResult.series,
             repeats: exerciseInResult.repeats,
             weight: exerciseInResult.weight,
-            restSeconds: exerciseInResult.restSeconds,
+            restMinSeconds: exerciseInResult.restMinSeconds,
+            restMaxSeconds: exerciseInResult.restMaxSeconds,
             notes: exerciseInResult.notes,
           ),
         );

@@ -118,7 +118,7 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
                                     ],
                                   ),
                                   Text(
-                                    'Descanso: ${exercise.restSeconds?.restTime ?? 'Não definido'}',
+                                    'Descanso: ${formatRestRange(exercise.restMinSeconds, exercise.restMaxSeconds)}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: textColor,

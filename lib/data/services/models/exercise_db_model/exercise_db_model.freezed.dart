@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ExerciseDbModel implements DiagnosticableTreeMixin {
 
- int? get exerciseId; int get workoutId; String get exerciseName; int get series; int get repeats; double get weight; int? get restSeconds; String? get notes;
+ int? get exerciseId; int get workoutId; String get exerciseName; int get series; int get repeats; double get weight; int? get restMinSeconds; int? get restMaxSeconds; String? get notes;
 /// Create a copy of ExerciseDbModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,21 +26,21 @@ $ExerciseDbModelCopyWith<ExerciseDbModel> get copyWith => _$ExerciseDbModelCopyW
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'ExerciseDbModel'))
-    ..add(DiagnosticsProperty('exerciseId', exerciseId))..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('exerciseName', exerciseName))..add(DiagnosticsProperty('series', series))..add(DiagnosticsProperty('repeats', repeats))..add(DiagnosticsProperty('weight', weight))..add(DiagnosticsProperty('restSeconds', restSeconds))..add(DiagnosticsProperty('notes', notes));
+    ..add(DiagnosticsProperty('exerciseId', exerciseId))..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('exerciseName', exerciseName))..add(DiagnosticsProperty('series', series))..add(DiagnosticsProperty('repeats', repeats))..add(DiagnosticsProperty('weight', weight))..add(DiagnosticsProperty('restMinSeconds', restMinSeconds))..add(DiagnosticsProperty('restMaxSeconds', restMaxSeconds))..add(DiagnosticsProperty('notes', notes));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseDbModel&&(identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.exerciseName, exerciseName) || other.exerciseName == exerciseName)&&(identical(other.series, series) || other.series == series)&&(identical(other.repeats, repeats) || other.repeats == repeats)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.restSeconds, restSeconds) || other.restSeconds == restSeconds)&&(identical(other.notes, notes) || other.notes == notes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseDbModel&&(identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.exerciseName, exerciseName) || other.exerciseName == exerciseName)&&(identical(other.series, series) || other.series == series)&&(identical(other.repeats, repeats) || other.repeats == repeats)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.restMinSeconds, restMinSeconds) || other.restMinSeconds == restMinSeconds)&&(identical(other.restMaxSeconds, restMaxSeconds) || other.restMaxSeconds == restMaxSeconds)&&(identical(other.notes, notes) || other.notes == notes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,exerciseId,workoutId,exerciseName,series,repeats,weight,restSeconds,notes);
+int get hashCode => Object.hash(runtimeType,exerciseId,workoutId,exerciseName,series,repeats,weight,restMinSeconds,restMaxSeconds,notes);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ExerciseDbModel(exerciseId: $exerciseId, workoutId: $workoutId, exerciseName: $exerciseName, series: $series, repeats: $repeats, weight: $weight, restSeconds: $restSeconds, notes: $notes)';
+  return 'ExerciseDbModel(exerciseId: $exerciseId, workoutId: $workoutId, exerciseName: $exerciseName, series: $series, repeats: $repeats, weight: $weight, restMinSeconds: $restMinSeconds, restMaxSeconds: $restMaxSeconds, notes: $notes)';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $ExerciseDbModelCopyWith<$Res>  {
   factory $ExerciseDbModelCopyWith(ExerciseDbModel value, $Res Function(ExerciseDbModel) _then) = _$ExerciseDbModelCopyWithImpl;
 @useResult
 $Res call({
- int? exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight, int? restSeconds, String? notes
+ int? exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight, int? restMinSeconds, int? restMaxSeconds, String? notes
 });
 
 
@@ -68,7 +68,7 @@ class _$ExerciseDbModelCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseDbModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? exerciseId = freezed,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,Object? restSeconds = freezed,Object? notes = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? exerciseId = freezed,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,Object? restMinSeconds = freezed,Object? restMaxSeconds = freezed,Object? notes = freezed,}) {
   return _then(_self.copyWith(
 exerciseId: freezed == exerciseId ? _self.exerciseId : exerciseId // ignore: cast_nullable_to_non_nullable
 as int?,workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
@@ -76,7 +76,8 @@ as int,exerciseName: null == exerciseName ? _self.exerciseName : exerciseName //
 as String,series: null == series ? _self.series : series // ignore: cast_nullable_to_non_nullable
 as int,repeats: null == repeats ? _self.repeats : repeats // ignore: cast_nullable_to_non_nullable
 as int,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
-as double,restSeconds: freezed == restSeconds ? _self.restSeconds : restSeconds // ignore: cast_nullable_to_non_nullable
+as double,restMinSeconds: freezed == restMinSeconds ? _self.restMinSeconds : restMinSeconds // ignore: cast_nullable_to_non_nullable
+as int?,restMaxSeconds: freezed == restMaxSeconds ? _self.restMaxSeconds : restMaxSeconds // ignore: cast_nullable_to_non_nullable
 as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -163,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight,  int? restSeconds,  String? notes)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight,  int? restMinSeconds,  int? restMaxSeconds,  String? notes)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ExerciseDBModel() when $default != null:
-return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight,_that.restSeconds,_that.notes);case _:
+return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight,_that.restMinSeconds,_that.restMaxSeconds,_that.notes);case _:
   return orElse();
 
 }
@@ -184,10 +185,10 @@ return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight,  int? restSeconds,  String? notes)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight,  int? restMinSeconds,  int? restMaxSeconds,  String? notes)  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseDBModel():
-return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight,_that.restSeconds,_that.notes);case _:
+return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight,_that.restMinSeconds,_that.restMaxSeconds,_that.notes);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +205,10 @@ return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight,  int? restSeconds,  String? notes)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? exerciseId,  int workoutId,  String exerciseName,  int series,  int repeats,  double weight,  int? restMinSeconds,  int? restMaxSeconds,  String? notes)?  $default,) {final _that = this;
 switch (_that) {
 case _ExerciseDBModel() when $default != null:
-return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight,_that.restSeconds,_that.notes);case _:
+return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series,_that.repeats,_that.weight,_that.restMinSeconds,_that.restMaxSeconds,_that.notes);case _:
   return null;
 
 }
@@ -219,7 +220,7 @@ return $default(_that.exerciseId,_that.workoutId,_that.exerciseName,_that.series
 
 
 class _ExerciseDBModel with DiagnosticableTreeMixin implements ExerciseDbModel {
-   _ExerciseDBModel({this.exerciseId, required this.workoutId, required this.exerciseName, required this.series, required this.repeats, required this.weight, required this.restSeconds, required this.notes});
+   _ExerciseDBModel({this.exerciseId, required this.workoutId, required this.exerciseName, required this.series, required this.repeats, required this.weight, required this.restMinSeconds, required this.restMaxSeconds, required this.notes});
   
 
 @override final  int? exerciseId;
@@ -228,7 +229,8 @@ class _ExerciseDBModel with DiagnosticableTreeMixin implements ExerciseDbModel {
 @override final  int series;
 @override final  int repeats;
 @override final  double weight;
-@override final  int? restSeconds;
+@override final  int? restMinSeconds;
+@override final  int? restMaxSeconds;
 @override final  String? notes;
 
 /// Create a copy of ExerciseDbModel
@@ -242,21 +244,21 @@ _$ExerciseDBModelCopyWith<_ExerciseDBModel> get copyWith => __$ExerciseDBModelCo
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'ExerciseDbModel'))
-    ..add(DiagnosticsProperty('exerciseId', exerciseId))..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('exerciseName', exerciseName))..add(DiagnosticsProperty('series', series))..add(DiagnosticsProperty('repeats', repeats))..add(DiagnosticsProperty('weight', weight))..add(DiagnosticsProperty('restSeconds', restSeconds))..add(DiagnosticsProperty('notes', notes));
+    ..add(DiagnosticsProperty('exerciseId', exerciseId))..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('exerciseName', exerciseName))..add(DiagnosticsProperty('series', series))..add(DiagnosticsProperty('repeats', repeats))..add(DiagnosticsProperty('weight', weight))..add(DiagnosticsProperty('restMinSeconds', restMinSeconds))..add(DiagnosticsProperty('restMaxSeconds', restMaxSeconds))..add(DiagnosticsProperty('notes', notes));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseDBModel&&(identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.exerciseName, exerciseName) || other.exerciseName == exerciseName)&&(identical(other.series, series) || other.series == series)&&(identical(other.repeats, repeats) || other.repeats == repeats)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.restSeconds, restSeconds) || other.restSeconds == restSeconds)&&(identical(other.notes, notes) || other.notes == notes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseDBModel&&(identical(other.exerciseId, exerciseId) || other.exerciseId == exerciseId)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.exerciseName, exerciseName) || other.exerciseName == exerciseName)&&(identical(other.series, series) || other.series == series)&&(identical(other.repeats, repeats) || other.repeats == repeats)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.restMinSeconds, restMinSeconds) || other.restMinSeconds == restMinSeconds)&&(identical(other.restMaxSeconds, restMaxSeconds) || other.restMaxSeconds == restMaxSeconds)&&(identical(other.notes, notes) || other.notes == notes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,exerciseId,workoutId,exerciseName,series,repeats,weight,restSeconds,notes);
+int get hashCode => Object.hash(runtimeType,exerciseId,workoutId,exerciseName,series,repeats,weight,restMinSeconds,restMaxSeconds,notes);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ExerciseDbModel(exerciseId: $exerciseId, workoutId: $workoutId, exerciseName: $exerciseName, series: $series, repeats: $repeats, weight: $weight, restSeconds: $restSeconds, notes: $notes)';
+  return 'ExerciseDbModel(exerciseId: $exerciseId, workoutId: $workoutId, exerciseName: $exerciseName, series: $series, repeats: $repeats, weight: $weight, restMinSeconds: $restMinSeconds, restMaxSeconds: $restMaxSeconds, notes: $notes)';
 }
 
 
@@ -267,7 +269,7 @@ abstract mixin class _$ExerciseDBModelCopyWith<$Res> implements $ExerciseDbModel
   factory _$ExerciseDBModelCopyWith(_ExerciseDBModel value, $Res Function(_ExerciseDBModel) _then) = __$ExerciseDBModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight, int? restSeconds, String? notes
+ int? exerciseId, int workoutId, String exerciseName, int series, int repeats, double weight, int? restMinSeconds, int? restMaxSeconds, String? notes
 });
 
 
@@ -284,7 +286,7 @@ class __$ExerciseDBModelCopyWithImpl<$Res>
 
 /// Create a copy of ExerciseDbModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? exerciseId = freezed,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,Object? restSeconds = freezed,Object? notes = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? exerciseId = freezed,Object? workoutId = null,Object? exerciseName = null,Object? series = null,Object? repeats = null,Object? weight = null,Object? restMinSeconds = freezed,Object? restMaxSeconds = freezed,Object? notes = freezed,}) {
   return _then(_ExerciseDBModel(
 exerciseId: freezed == exerciseId ? _self.exerciseId : exerciseId // ignore: cast_nullable_to_non_nullable
 as int?,workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
@@ -292,7 +294,8 @@ as int,exerciseName: null == exerciseName ? _self.exerciseName : exerciseName //
 as String,series: null == series ? _self.series : series // ignore: cast_nullable_to_non_nullable
 as int,repeats: null == repeats ? _self.repeats : repeats // ignore: cast_nullable_to_non_nullable
 as int,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
-as double,restSeconds: freezed == restSeconds ? _self.restSeconds : restSeconds // ignore: cast_nullable_to_non_nullable
+as double,restMinSeconds: freezed == restMinSeconds ? _self.restMinSeconds : restMinSeconds // ignore: cast_nullable_to_non_nullable
+as int?,restMaxSeconds: freezed == restMaxSeconds ? _self.restMaxSeconds : restMaxSeconds // ignore: cast_nullable_to_non_nullable
 as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

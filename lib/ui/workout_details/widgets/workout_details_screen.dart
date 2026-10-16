@@ -161,7 +161,7 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                   ],
                 ),
                 Text(
-                  'Descanso: ${exercise.restSeconds?.restTime ?? 'Não definido'}',
+                  'Descanso: ${formatRestRange(exercise.restMinSeconds, exercise.restMaxSeconds)}',
                   style: TextStyle(fontSize: 12, color: textColor),
                 ),
               ],
@@ -247,7 +247,8 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
           series: 3,
           repeats: 12,
           weight: 20,
-          restSeconds: 60,
+          restMinSeconds: 45,
+          restMaxSeconds: 60,
           notes: null,
         ),
         onSave: widget.viewModel.createExercise,

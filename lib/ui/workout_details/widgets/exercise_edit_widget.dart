@@ -27,7 +27,10 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
       TextEditingController();
   final TextEditingController _exerciseWeightController =
       TextEditingController();
-  final TextEditingController _exerciseRestController = TextEditingController();
+  final TextEditingController _exerciseRestMinController =
+      TextEditingController();
+  final TextEditingController _exerciseRestMaxController =
+      TextEditingController();
   final TextEditingController _exerciseNotesController =
       TextEditingController();
 
@@ -40,8 +43,10 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
     _exerciseSeriesController.text = widget.exercise.series.toString();
     _exerciseRepeatsController.text = widget.exercise.repeats.toString();
     _exerciseWeightController.text = widget.exercise.weight.toString();
-    _exerciseRestController.text =
-        widget.exercise.restSeconds?.toString() ?? '';
+    _exerciseRestMinController.text =
+        widget.exercise.restMinSeconds?.toString() ?? '';
+    _exerciseRestMaxController.text =
+        widget.exercise.restMaxSeconds?.toString() ?? '';
     _exerciseNotesController.text = widget.exercise.notes ?? '';
   }
 
@@ -51,7 +56,8 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
     _exerciseSeriesController.dispose();
     _exerciseRepeatsController.dispose();
     _exerciseWeightController.dispose();
-    _exerciseRestController.dispose();
+    _exerciseRestMinController.dispose();
+    _exerciseRestMaxController.dispose();
     _exerciseNotesController.dispose();
     super.dispose();
   }
@@ -89,12 +95,28 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
                   ),
                   controller: _exerciseWeightController,
                 ),
-                TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Descanso (segundos)',
-                  ),
-                  keyboardType: TextInputType.number,
-                  controller: _exerciseRestController,
+                Row(
+                  spacing: 16,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Descanso mín. (s)',
+                        ),
+                        keyboardType: TextInputType.number,
+                        controller: _exerciseRestMinController,
+                      ),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Descanso máx. (s)',
+                        ),
+                        keyboardType: TextInputType.number,
+                        controller: _exerciseRestMaxController,
+                      ),
+                    ),
+                  ],
                 ),
                 TextField(
                   decoration: const InputDecoration(labelText: 'Observações'),
@@ -132,7 +154,8 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
     final series = _exerciseSeriesController.text.toIntOrNull();
     final repeats = _exerciseRepeatsController.text.toIntOrNull();
     final weight = _exerciseWeightController.text.toDoubleOrNull();
-    final restSeconds = _exerciseRestController.text.toIntOrNull();
+    final restMin = _exerciseRestMinController.text.toIntOrNull();
+    final restMax = _exerciseRestMaxController.text.toIntOrNull();
     final notes = _exerciseNotesController.text.trim();
 
     if (name.isEmpty) {
@@ -152,9 +175,18 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
       return;
     }
 
-    if (restSeconds == null || restSeconds < 0) {
+    if (restMin == null || restMin < 0 || restMax == null || restMax < 0) {
       setState(
-        () => _errorMessage = 'Informe o descanso em segundos (ex: 60 ou 90)',
+        () => _errorMessage =
+            'Informe o descanso mínimo e máximo em segundos (ex: 45 e 60)',
+      );
+      return;
+    }
+
+    if (restMax < restMin) {
+      setState(
+        () =>
+            _errorMessage = 'O descanso máximo não pode ser menor que o mínimo',
       );
       return;
     }
@@ -169,7 +201,8 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
         series: series,
         repeats: repeats,
         weight: weight,
-        restSeconds: restSeconds,
+        restMinSeconds: restMin,
+        restMaxSeconds: restMax,
         notes: notes.isEmpty ? null : notes,
       ),
     );

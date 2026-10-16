@@ -12,7 +12,8 @@ abstract class ExerciseDbModel with _$ExerciseDbModel {
     required int series,
     required int repeats,
     required double weight,
-    required int? restSeconds,
+    required int? restMinSeconds,
+    required int? restMaxSeconds,
     required String? notes,
   }) = _ExerciseDBModel;
 }

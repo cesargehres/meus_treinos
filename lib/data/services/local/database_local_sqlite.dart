@@ -56,7 +56,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
         series INTEGER NOT NULL,
         repeats INTEGER NOT NULL,
         weight REAL NOT NULL,
-        rest_seconds INTEGER,
+        rest_min_seconds INTEGER,
+        rest_max_seconds INTEGER,
         notes TEXT,
         FOREIGN KEY (workout_id) REFERENCES $_tblWorkouts (workout_id) ON DELETE CASCADE
       )
@@ -65,9 +66,10 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // v2: descanso e observações nos exercícios
+    // v2: faixa de descanso (mínimo e máximo) e observações nos exercícios
     if (oldVersion < 2) {
-      await db.execute('ALTER TABLE $_tblExercises ADD COLUMN rest_seconds INTEGER');
+      await db.execute('ALTER TABLE $_tblExercises ADD COLUMN rest_min_seconds INTEGER');
+      await db.execute('ALTER TABLE $_tblExercises ADD COLUMN rest_max_seconds INTEGER');
       await db.execute('ALTER TABLE $_tblExercises ADD COLUMN notes TEXT');
     }
   }
@@ -87,7 +89,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
           'series': exerciseDbModel.series,
           'repeats': exerciseDbModel.repeats,
           'weight': exerciseDbModel.weight,
-          'rest_seconds': exerciseDbModel.restSeconds,
+          'rest_min_seconds': exerciseDbModel.restMinSeconds,
+          'rest_max_seconds': exerciseDbModel.restMaxSeconds,
           'notes': exerciseDbModel.notes,
         },
         conflictAlgorithm: ConflictAlgorithm.abort,
@@ -100,7 +103,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
         series: exerciseDbModel.series,
         repeats: exerciseDbModel.repeats,
         weight: exerciseDbModel.weight,
-        restSeconds: exerciseDbModel.restSeconds,
+        restMinSeconds: exerciseDbModel.restMinSeconds,
+        restMaxSeconds: exerciseDbModel.restMaxSeconds,
         notes: exerciseDbModel.notes,
       );
 
@@ -181,7 +185,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
         series: map['series'] as int,
         repeats: map['repeats'] as int,
         weight: (map['weight'] as num).toDouble(),
-        restSeconds: map['rest_seconds'] as int?,
+        restMinSeconds: map['rest_min_seconds'] as int?,
+        restMaxSeconds: map['rest_max_seconds'] as int?,
         notes: map['notes'] as String?,
       );
 
@@ -220,7 +225,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
             series: exercise['series'] as int,
             repeats: exercise['repeats'] as int,
             weight: (exercise['weight'] as num).toDouble(),
-            restSeconds: exercise['rest_seconds'] as int?,
+            restMinSeconds: exercise['rest_min_seconds'] as int?,
+            restMaxSeconds: exercise['rest_max_seconds'] as int?,
             notes: exercise['notes'] as String?,
         );
       }).toList();
@@ -370,7 +376,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
           'series': exerciseDbModel.series,
           'repeats': exerciseDbModel.repeats,
           'weight': exerciseDbModel.weight,
-          'rest_seconds': exerciseDbModel.restSeconds,
+          'rest_min_seconds': exerciseDbModel.restMinSeconds,
+          'rest_max_seconds': exerciseDbModel.restMaxSeconds,
           'notes': exerciseDbModel.notes,
         },
         where: 'exercise_id = ?',
