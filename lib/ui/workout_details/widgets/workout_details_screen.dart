@@ -179,6 +179,12 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
     Exercise exercise,
     Color textColor,
   ) {
+    final TextStyle notesStyle = TextStyle(
+      fontSize: 12,
+      color: textColor,
+      fontStyle: FontStyle.italic,
+    );
+
     return Container(
       padding: const EdgeInsets.all(8),
       color: Theme.of(context).colorScheme.primary,
@@ -214,6 +220,20 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                 Text(
                   'Descanso: ${formatRestRange(exercise.restMinSeconds, exercise.restMaxSeconds)}',
                   style: TextStyle(fontSize: 12, color: textColor),
+                ),
+                // Reserva sempre duas linhas para a observação, para todos os
+                // cards terem o mesmo tamanho, com ou sem observação.
+                Stack(
+                  children: [
+                    Text('\n', style: notesStyle),
+                    if (exercise.notes != null)
+                      Text(
+                        exercise.notes!,
+                        style: notesStyle,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                  ],
                 ),
               ],
             ),
