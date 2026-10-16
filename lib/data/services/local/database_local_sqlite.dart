@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:meus_treinos/data/services/exceptions/exceptions.dart';
 import 'package:meus_treinos/data/services/local/database_local_interface.dart';
 import 'package:meus_treinos/data/services/models/exercise_db_model/exercise_db_model.dart';
 import 'package:meus_treinos/data/services/models/workout_db_model/workout_db_model.dart';
+import 'package:meus_treinos/data/services/models/workout_plan_db_model/workout_plan_db_model.dart';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -9,8 +11,11 @@ import 'package:path/path.dart';
 
 class DataBaseLocalSqlite implements DataBaseLocalInterface {
   static Database? _database;
-  static const String _dbName = 'meus_treinos_db.db';
-  static const int _dbVersion = 2;
+  // Os testes trocam o nome do arquivo para não mexer no banco do app.
+  @visibleForTesting
+  static String dbName = 'meus_treinos_db.db';
+  static const int _dbVersion = 3;
+  static const String _tblWorkoutPlans = 'workout_plans';
   static const String _tblWorkouts = 'workouts';
   static const String _tblExercises = 'exercises';
 
@@ -21,9 +26,16 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
     return _database!;
   }
 
+  /// Fecha o banco aberto, para cada teste poder começar de um banco novo.
+  @visibleForTesting
+  static Future<void> closeDatabase() async {
+    await _database?.close();
+    _database = null;
+  }
+
   Future<Database> _initDatabase() async {
     String databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, _dbName);
+    String path = join(databasesPath, dbName);
 
     return await openDatabase(
       path,
@@ -42,7 +54,9 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       CREATE TABLE $_tblWorkouts(
         workout_id INTEGER PRIMARY KEY AUTOINCREMENT,
         workout_name TEXT NOT NULL,
-        weekday INTEGER NOT NULL
+        weekday INTEGER NOT NULL,
+        workout_plan_id INTEGER NOT NULL,
+        FOREIGN KEY (workout_plan_id) REFERENCES $_tblWorkoutPlans (workout_plan_id) ON DELETE CASCADE
       )
       """
     );
@@ -64,6 +78,21 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       )
       """
     );
+
+    // Instalação nova já começa com os 7 dias da ficha padrão. O nome fica em
+    // minúsculas, como o repositório salva.
+    final int workoutPlanId = await _createWorkoutPlansTable(db);
+
+    for (int weekday = 1; weekday <= 7; weekday++) {
+      await db.insert(
+        _tblWorkouts,
+        {
+          'workout_plan_id': workoutPlanId,
+          'workout_name': 'sem treino',
+          'weekday': weekday,
+        },
+      );
+    }
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -85,6 +114,43 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
         """
       );
     }
+
+    // v3: fichas de treino. Os treinos que já existem passam a ser da ficha padrão.
+    if (oldVersion < 3) {
+      final int workoutPlanId = await _createWorkoutPlansTable(db);
+
+      // Com as chaves estrangeiras ligadas, o SQLite só aceita adicionar uma
+      // coluna com REFERENCES se ela puder ser nula, então o NOT NULL fica só
+      // no onCreate. Recriar a tabela não serve: apagar a antiga apagaria os
+      // exercícios junto, pelo ON DELETE CASCADE.
+      await db.execute(
+        'ALTER TABLE $_tblWorkouts ADD COLUMN workout_plan_id INTEGER '
+        'REFERENCES $_tblWorkoutPlans (workout_plan_id) ON DELETE CASCADE',
+      );
+      await db.update(_tblWorkouts, {'workout_plan_id': workoutPlanId});
+    }
+  }
+
+  /// Cria a tabela de fichas com a ficha padrão já ativa e devolve o id dela.
+  /// Sempre existe uma ficha ativa, e os treinos da semana são os dela.
+  Future<int> _createWorkoutPlansTable(Database db) async {
+    await db.execute(
+        """
+      CREATE TABLE $_tblWorkoutPlans(
+        workout_plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        workout_plan_name TEXT NOT NULL,
+        is_active INTEGER NOT NULL DEFAULT 0
+      )
+      """
+    );
+
+    return db.insert(
+      _tblWorkoutPlans,
+      {
+        'workout_plan_name': 'Minha ficha',
+        'is_active': 1,
+      },
+    );
   }
 
   @override
@@ -151,6 +217,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       final int workoutId = await db.insert(
           _tblWorkouts,
           {
+            'workout_plan_id': workoutDbModel.workoutPlanId,
             'workout_name': workoutDbModel.workoutName,
             'weekday': workoutDbModel.weekday
           }
@@ -158,6 +225,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
 
       final WorkoutDbModel workout = WorkoutDbModel(
           workoutId: workoutId,
+          workoutPlanId: workoutDbModel.workoutPlanId,
           workoutName: workoutDbModel.workoutName,
           weekday: workoutDbModel.weekday
       );
@@ -290,6 +358,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
 
       final WorkoutDbModel workout = WorkoutDbModel(
         workoutId: workoutId,
+        workoutPlanId: map['workout_plan_id'] as int,
         workoutName: map['workout_name'] as String,
         weekday: map['weekday'] as int
       );
@@ -309,7 +378,49 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
   }
 
   @override
+  Future<WorkoutPlanDbModel> readActiveWorkoutPlan() async {
+    try {
+      final db = await database;
+
+      final List<Map<String, Object?>> result = await db.query(
+        _tblWorkoutPlans,
+        where: 'is_active = 1',
+        limit: 1,
+      );
+
+      if (result.isEmpty) {
+        throw DataBaseLocalException(
+          message: 'Nenhuma ficha de treino ativa',
+          technicalMessage: 'No workout plan found with is_active=1',
+          code: 'SQLITE_ACTIVE_WORKOUT_PLAN_NOT_FOUND',
+        );
+      }
+
+      final Map<String, Object?> map = result.first;
+
+      final WorkoutPlanDbModel workoutPlan = WorkoutPlanDbModel(
+        workoutPlanId: map['workout_plan_id'] as int,
+        workoutPlanName: map['workout_plan_name'] as String,
+        isActive: map['is_active'] == 1,
+      );
+
+      return workoutPlan;
+    } on DataBaseLocalException {
+      rethrow;
+    } catch (e, s) {
+      final String technical = '$e\n$s';
+
+      throw DataBaseLocalException(
+        message: 'Erro ao buscar a ficha de treino ativa',
+        technicalMessage: technical,
+        code: 'SQLITE_READ_ACTIVE_WORKOUT_PLAN',
+      );
+    }
+  }
+
+  @override
   Future<WorkoutDbModel?> readWorkoutByWeekday({
+    required int workoutPlanId,
     required int weekday
   }) async {
     try {
@@ -317,8 +428,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
 
       final List<Map<String, Object?>> result = await db.query(
         _tblWorkouts,
-        where: 'weekday = ?',
-        whereArgs: [weekday],
+        where: 'workout_plan_id = ? AND weekday = ?',
+        whereArgs: [workoutPlanId, weekday],
       );
 
       if (result.isEmpty) {
@@ -329,6 +440,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
 
       final WorkoutDbModel workout = WorkoutDbModel(
           workoutId: map['workout_id'] as int,
+          workoutPlanId: workoutPlanId,
           workoutName: map['workout_name'] as String,
           weekday: weekday
       );
@@ -346,18 +458,23 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
   }
 
   @override
-  Future<List<WorkoutDbModel>> readWorkouts() async {
+  Future<List<WorkoutDbModel>> readWorkouts({
+    required int workoutPlanId
+  }) async {
     try {
       final db = await database;
 
       final List<Map<String, Object?>> result = await db.query(
         _tblWorkouts,
+        where: 'workout_plan_id = ?',
+        whereArgs: [workoutPlanId],
         orderBy: 'weekday ASC',
       );
 
       List<WorkoutDbModel> workouts = result.map((workout) {
         return WorkoutDbModel(
           workoutId: workout['workout_id'] as int,
+          workoutPlanId: workoutPlanId,
           workoutName: workout['workout_name'] as String,
           weekday: workout['weekday'] as int
         );

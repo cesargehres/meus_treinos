@@ -1,11 +1,16 @@
 import 'package:meus_treinos/data/services/models/exercise_db_model/exercise_db_model.dart';
 import 'package:meus_treinos/data/services/models/workout_db_model/workout_db_model.dart';
+import 'package:meus_treinos/data/services/models/workout_plan_db_model/workout_plan_db_model.dart';
 
 abstract interface class DataBaseLocalInterface {
   // ---------- READ ----------
-  Future<List<WorkoutDbModel>> readWorkouts();
+  Future<WorkoutPlanDbModel> readActiveWorkoutPlan();
+  Future<List<WorkoutDbModel>> readWorkouts({required int workoutPlanId});
   Future<WorkoutDbModel> readWorkout({required int workoutId});
-  Future<WorkoutDbModel?> readWorkoutByWeekday({required int weekday});
+  Future<WorkoutDbModel?> readWorkoutByWeekday({
+    required int workoutPlanId,
+    required int weekday
+  });
   Future<ExerciseDbModel> readExercise({required int exerciseId});
   Future<List<ExerciseDbModel>> readExercisesByWorkout({required int workoutId});
 

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WorkoutDbModel implements DiagnosticableTreeMixin {
 
- int? get workoutId; String get workoutName; int get weekday;
+ int? get workoutId; int get workoutPlanId; String get workoutName; int get weekday;
 /// Create a copy of WorkoutDbModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,21 +26,21 @@ $WorkoutDbModelCopyWith<WorkoutDbModel> get copyWith => _$WorkoutDbModelCopyWith
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'WorkoutDbModel'))
-    ..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('workoutName', workoutName))..add(DiagnosticsProperty('weekday', weekday));
+    ..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('workoutPlanId', workoutPlanId))..add(DiagnosticsProperty('workoutName', workoutName))..add(DiagnosticsProperty('weekday', weekday));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkoutDbModel&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.workoutName, workoutName) || other.workoutName == workoutName)&&(identical(other.weekday, weekday) || other.weekday == weekday));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkoutDbModel&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.workoutPlanId, workoutPlanId) || other.workoutPlanId == workoutPlanId)&&(identical(other.workoutName, workoutName) || other.workoutName == workoutName)&&(identical(other.weekday, weekday) || other.weekday == weekday));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,workoutId,workoutName,weekday);
+int get hashCode => Object.hash(runtimeType,workoutId,workoutPlanId,workoutName,weekday);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WorkoutDbModel(workoutId: $workoutId, workoutName: $workoutName, weekday: $weekday)';
+  return 'WorkoutDbModel(workoutId: $workoutId, workoutPlanId: $workoutPlanId, workoutName: $workoutName, weekday: $weekday)';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $WorkoutDbModelCopyWith<$Res>  {
   factory $WorkoutDbModelCopyWith(WorkoutDbModel value, $Res Function(WorkoutDbModel) _then) = _$WorkoutDbModelCopyWithImpl;
 @useResult
 $Res call({
- int? workoutId, String workoutName, int weekday
+ int? workoutId, int workoutPlanId, String workoutName, int weekday
 });
 
 
@@ -68,10 +68,11 @@ class _$WorkoutDbModelCopyWithImpl<$Res>
 
 /// Create a copy of WorkoutDbModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? workoutId = freezed,Object? workoutName = null,Object? weekday = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? workoutId = freezed,Object? workoutPlanId = null,Object? workoutName = null,Object? weekday = null,}) {
   return _then(_self.copyWith(
 workoutId: freezed == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
-as int?,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
+as int?,workoutPlanId: null == workoutPlanId ? _self.workoutPlanId : workoutPlanId // ignore: cast_nullable_to_non_nullable
+as int,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
 as String,weekday: null == weekday ? _self.weekday : weekday // ignore: cast_nullable_to_non_nullable
 as int,
   ));
@@ -158,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? workoutId,  String workoutName,  int weekday)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? workoutId,  int workoutPlanId,  String workoutName,  int weekday)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WorkoutDbModel() when $default != null:
-return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
+return $default(_that.workoutId,_that.workoutPlanId,_that.workoutName,_that.weekday);case _:
   return orElse();
 
 }
@@ -179,10 +180,10 @@ return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? workoutId,  String workoutName,  int weekday)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? workoutId,  int workoutPlanId,  String workoutName,  int weekday)  $default,) {final _that = this;
 switch (_that) {
 case _WorkoutDbModel():
-return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
+return $default(_that.workoutId,_that.workoutPlanId,_that.workoutName,_that.weekday);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +200,10 @@ return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? workoutId,  String workoutName,  int weekday)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? workoutId,  int workoutPlanId,  String workoutName,  int weekday)?  $default,) {final _that = this;
 switch (_that) {
 case _WorkoutDbModel() when $default != null:
-return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
+return $default(_that.workoutId,_that.workoutPlanId,_that.workoutName,_that.weekday);case _:
   return null;
 
 }
@@ -214,10 +215,11 @@ return $default(_that.workoutId,_that.workoutName,_that.weekday);case _:
 
 
 class _WorkoutDbModel with DiagnosticableTreeMixin implements WorkoutDbModel {
-   _WorkoutDbModel({this.workoutId, required this.workoutName, required this.weekday});
+   _WorkoutDbModel({this.workoutId, required this.workoutPlanId, required this.workoutName, required this.weekday});
   
 
 @override final  int? workoutId;
+@override final  int workoutPlanId;
 @override final  String workoutName;
 @override final  int weekday;
 
@@ -232,21 +234,21 @@ _$WorkoutDbModelCopyWith<_WorkoutDbModel> get copyWith => __$WorkoutDbModelCopyW
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'WorkoutDbModel'))
-    ..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('workoutName', workoutName))..add(DiagnosticsProperty('weekday', weekday));
+    ..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('workoutPlanId', workoutPlanId))..add(DiagnosticsProperty('workoutName', workoutName))..add(DiagnosticsProperty('weekday', weekday));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkoutDbModel&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.workoutName, workoutName) || other.workoutName == workoutName)&&(identical(other.weekday, weekday) || other.weekday == weekday));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkoutDbModel&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.workoutPlanId, workoutPlanId) || other.workoutPlanId == workoutPlanId)&&(identical(other.workoutName, workoutName) || other.workoutName == workoutName)&&(identical(other.weekday, weekday) || other.weekday == weekday));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,workoutId,workoutName,weekday);
+int get hashCode => Object.hash(runtimeType,workoutId,workoutPlanId,workoutName,weekday);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WorkoutDbModel(workoutId: $workoutId, workoutName: $workoutName, weekday: $weekday)';
+  return 'WorkoutDbModel(workoutId: $workoutId, workoutPlanId: $workoutPlanId, workoutName: $workoutName, weekday: $weekday)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$WorkoutDbModelCopyWith<$Res> implements $WorkoutDbModelCo
   factory _$WorkoutDbModelCopyWith(_WorkoutDbModel value, $Res Function(_WorkoutDbModel) _then) = __$WorkoutDbModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? workoutId, String workoutName, int weekday
+ int? workoutId, int workoutPlanId, String workoutName, int weekday
 });
 
 
@@ -274,10 +276,11 @@ class __$WorkoutDbModelCopyWithImpl<$Res>
 
 /// Create a copy of WorkoutDbModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? workoutId = freezed,Object? workoutName = null,Object? weekday = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? workoutId = freezed,Object? workoutPlanId = null,Object? workoutName = null,Object? weekday = null,}) {
   return _then(_WorkoutDbModel(
 workoutId: freezed == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
-as int?,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
+as int?,workoutPlanId: null == workoutPlanId ? _self.workoutPlanId : workoutPlanId // ignore: cast_nullable_to_non_nullable
+as int,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
 as String,weekday: null == weekday ? _self.weekday : weekday // ignore: cast_nullable_to_non_nullable
 as int,
   ));

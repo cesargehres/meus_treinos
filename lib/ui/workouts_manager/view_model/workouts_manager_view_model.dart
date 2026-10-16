@@ -36,6 +36,9 @@ class WorkoutsManagerViewModel extends ChangeNotifier {
     }
 
     if (workouts.length < 7) {
+      // O getWorkouts já carregou a ficha ativa; os dias que faltam são dela.
+      final int workoutPlanId =
+          _workoutRepository.activeWorkoutPlan!.workoutPlanId!;
       final List<int> existingWeekdays = [];
 
       for (Workout workout in workouts) {
@@ -48,7 +51,9 @@ class WorkoutsManagerViewModel extends ChangeNotifier {
         if (!existingWeekdays.contains(c)) {
           var createWorkoutResult = await _workoutRepository.createWorkout(
             workout: Workout(
-              workoutName: 'Sem Treino', weekday: c
+              workoutPlanId: workoutPlanId,
+              workoutName: 'Sem Treino',
+              weekday: c,
             )
           );
 
