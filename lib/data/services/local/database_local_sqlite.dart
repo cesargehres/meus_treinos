@@ -59,6 +59,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
         rest_min_seconds INTEGER,
         rest_max_seconds INTEGER,
         notes TEXT,
+        position INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (workout_id) REFERENCES $_tblWorkouts (workout_id) ON DELETE CASCADE
       )
       """
@@ -66,11 +67,23 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // v2: faixa de descanso (mínimo e máximo) e observações nos exercícios
+    // v2: faixa de descanso (mínimo e máximo), observações e ordem dos exercícios
     if (oldVersion < 2) {
       await db.execute('ALTER TABLE $_tblExercises ADD COLUMN rest_min_seconds INTEGER');
       await db.execute('ALTER TABLE $_tblExercises ADD COLUMN rest_max_seconds INTEGER');
       await db.execute('ALTER TABLE $_tblExercises ADD COLUMN notes TEXT');
+      await db.execute('ALTER TABLE $_tblExercises ADD COLUMN position INTEGER NOT NULL DEFAULT 0');
+
+      // Exercícios existentes ficam na ordem em que foram cadastrados.
+      await db.execute(
+          """
+        UPDATE $_tblExercises SET position = (
+          SELECT COUNT(*) FROM $_tblExercises AS previous
+          WHERE previous.workout_id = $_tblExercises.workout_id
+            AND previous.exercise_id < $_tblExercises.exercise_id
+        )
+        """
+      );
     }
   }
 
@@ -80,6 +93,12 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
   }) async {
     try {
       final db = await database;
+
+      // Exercício novo entra no fim da lista do treino.
+      final List<Map<String, Object?>> nextPosition = await db.rawQuery(
+        'SELECT COALESCE(MAX(position), -1) + 1 AS position FROM $_tblExercises WHERE workout_id = ?',
+        [exerciseDbModel.workoutId],
+      );
 
       final int exerciseId = await db.insert(
         _tblExercises,
@@ -92,6 +111,7 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
           'rest_min_seconds': exerciseDbModel.restMinSeconds,
           'rest_max_seconds': exerciseDbModel.restMaxSeconds,
           'notes': exerciseDbModel.notes,
+          'position': nextPosition.first['position'] as int,
         },
         conflictAlgorithm: ConflictAlgorithm.abort,
       );
@@ -214,7 +234,8 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
       final List<Map<String, Object?>> result = await db.query(
           _tblExercises,
           where: 'workout_id = ?',
-          whereArgs: [workoutId]
+          whereArgs: [workoutId],
+          orderBy: 'position ASC, exercise_id ASC'
       );
 
       final List<ExerciseDbModel> exercises = result.map((exercise) {
@@ -404,6 +425,35 @@ class DataBaseLocalSqlite implements DataBaseLocalInterface {
         message: 'Erro ao atualizar o exercício',
         technicalMessage: technical,
         code: 'SQLITE_UPDATE_EXERCISE',
+      );
+    }
+  }
+
+  @override
+  Future<void> updateExercisesOrder({
+    required int workoutId,
+    required List<int> exerciseIds
+  }) async {
+    try {
+      final db = await database;
+
+      await db.transaction((txn) async {
+        for (int index = 0; index < exerciseIds.length; index++) {
+          await txn.update(
+            _tblExercises,
+            {'position': index},
+            where: 'exercise_id = ? AND workout_id = ?',
+            whereArgs: [exerciseIds[index], workoutId],
+          );
+        }
+      });
+    } catch (e, s) {
+      final String technical = '$e\n$s';
+
+      throw DataBaseLocalException(
+        message: 'Erro ao reordenar os exercícios',
+        technicalMessage: technical,
+        code: 'SQLITE_UPDATE_EXERCISES_ORDER',
       );
     }
   }

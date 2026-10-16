@@ -27,6 +27,11 @@ abstract interface class DataBaseLocalInterface {
     required ExerciseDbModel exerciseDbModel
   });
 
+  Future<void> updateExercisesOrder({
+    required int workoutId,
+    required List<int> exerciseIds
+  });
+
 
   // ---------- DELETE ----------
   Future<void> deleteExercise({required int exerciseId});

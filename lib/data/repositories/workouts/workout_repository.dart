@@ -266,6 +266,48 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
   }
 
   @override
+  Future<Result<Unit>> reorderExercises({
+    required int workoutId,
+    required List<Exercise> exercises,
+  }) async {
+    final workoutIndex = _workouts.indexWhere(
+      (workout) => workout.workoutId == workoutId,
+    );
+
+    if (workoutIndex == -1) {
+      return Failure(Exception('Treino não encontrado no cache'));
+    }
+
+    // Atualiza o cache antes de gravar, para a lista não voltar à ordem
+    // antiga enquanto o banco salva. Se der erro, a ordem antiga é restaurada.
+    final Workout previousWorkout = _workouts[workoutIndex];
+    _workouts[workoutIndex] = previousWorkout.copyWith(exercises: exercises);
+    _currentWorkout = _workouts[workoutIndex];
+
+    try {
+      await _dataBaseLocal.updateExercisesOrder(
+        workoutId: workoutId,
+        exerciseIds: exercises.map((exercise) => exercise.exerciseId!).toList(),
+      );
+
+      return Success(unit);
+    } on DataBaseLocalException catch (e) {
+      debugPrint('[${e.code}] ${e.message}');
+      debugPrint(e.technicalMessage);
+
+      _workouts[workoutIndex] = previousWorkout;
+      _currentWorkout = previousWorkout;
+      return Failure(e);
+    } catch (e) {
+      debugPrint(e.toString());
+
+      _workouts[workoutIndex] = previousWorkout;
+      _currentWorkout = previousWorkout;
+      return Failure(Exception('Houve um erro inesperado!'));
+    }
+  }
+
+  @override
   Future<Result<Unit>> deleteExercise({required Exercise exercise}) async {
     try {
       await _dataBaseLocal.deleteExercise(exerciseId: exercise.exerciseId!);
