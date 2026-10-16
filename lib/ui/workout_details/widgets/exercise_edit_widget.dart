@@ -20,6 +20,8 @@ class ExerciseEditWidget extends StatefulWidget {
 }
 
 class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
+  static const int _maxNotesLength = 150;
+
   final TextEditingController _exerciseNameController = TextEditingController();
   final TextEditingController _exerciseSeriesController =
       TextEditingController();
@@ -124,6 +126,7 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
                   textCapitalization: TextCapitalization.sentences,
                   minLines: 1,
                   maxLines: 3,
+                  maxLength: _maxNotesLength,
                   controller: _exerciseNotesController,
                 ),
                 if (_errorMessage != null) ...[
@@ -187,6 +190,14 @@ class _ExerciseEditWidgetState extends State<ExerciseEditWidget> {
       setState(
         () =>
             _errorMessage = 'O descanso máximo não pode ser menor que o mínimo',
+      );
+      return;
+    }
+
+    if (notes.characters.length > _maxNotesLength) {
+      setState(
+        () => _errorMessage =
+            'As observações podem ter no máximo $_maxNotesLength caracteres',
       );
       return;
     }
