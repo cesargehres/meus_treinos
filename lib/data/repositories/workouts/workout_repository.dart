@@ -165,8 +165,6 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
 
       workout = workout.copyWith(exercises: newExercises);
 
-      _currentWorkout = workout;
-
       return Success(workout);
     } catch (e) {
       return Failure(Exception('Erro ao buscar treino do dia: $e'));
