@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Workout implements DiagnosticableTreeMixin {
 
- int? get workoutId; String get workoutName; int get weekday; List<Exercise> get exercises;
+ int? get workoutId; int get workoutPlanId; String get workoutName; int get weekday; List<Exercise> get exercises;
 /// Create a copy of Workout
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,21 +26,21 @@ $WorkoutCopyWith<Workout> get copyWith => _$WorkoutCopyWithImpl<Workout>(this as
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'Workout'))
-    ..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('workoutName', workoutName))..add(DiagnosticsProperty('weekday', weekday))..add(DiagnosticsProperty('exercises', exercises));
+    ..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('workoutPlanId', workoutPlanId))..add(DiagnosticsProperty('workoutName', workoutName))..add(DiagnosticsProperty('weekday', weekday))..add(DiagnosticsProperty('exercises', exercises));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Workout&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.workoutName, workoutName) || other.workoutName == workoutName)&&(identical(other.weekday, weekday) || other.weekday == weekday)&&const DeepCollectionEquality().equals(other.exercises, exercises));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Workout&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.workoutPlanId, workoutPlanId) || other.workoutPlanId == workoutPlanId)&&(identical(other.workoutName, workoutName) || other.workoutName == workoutName)&&(identical(other.weekday, weekday) || other.weekday == weekday)&&const DeepCollectionEquality().equals(other.exercises, exercises));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,workoutId,workoutName,weekday,const DeepCollectionEquality().hash(exercises));
+int get hashCode => Object.hash(runtimeType,workoutId,workoutPlanId,workoutName,weekday,const DeepCollectionEquality().hash(exercises));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Workout(workoutId: $workoutId, workoutName: $workoutName, weekday: $weekday, exercises: $exercises)';
+  return 'Workout(workoutId: $workoutId, workoutPlanId: $workoutPlanId, workoutName: $workoutName, weekday: $weekday, exercises: $exercises)';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $WorkoutCopyWith<$Res>  {
   factory $WorkoutCopyWith(Workout value, $Res Function(Workout) _then) = _$WorkoutCopyWithImpl;
 @useResult
 $Res call({
- int? workoutId, String workoutName, int weekday, List<Exercise> exercises
+ int? workoutId, int workoutPlanId, String workoutName, int weekday, List<Exercise> exercises
 });
 
 
@@ -68,10 +68,11 @@ class _$WorkoutCopyWithImpl<$Res>
 
 /// Create a copy of Workout
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? workoutId = freezed,Object? workoutName = null,Object? weekday = null,Object? exercises = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? workoutId = freezed,Object? workoutPlanId = null,Object? workoutName = null,Object? weekday = null,Object? exercises = null,}) {
   return _then(_self.copyWith(
 workoutId: freezed == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
-as int?,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
+as int?,workoutPlanId: null == workoutPlanId ? _self.workoutPlanId : workoutPlanId // ignore: cast_nullable_to_non_nullable
+as int,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
 as String,weekday: null == weekday ? _self.weekday : weekday // ignore: cast_nullable_to_non_nullable
 as int,exercises: null == exercises ? _self.exercises : exercises // ignore: cast_nullable_to_non_nullable
 as List<Exercise>,
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? workoutId,  String workoutName,  int weekday,  List<Exercise> exercises)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? workoutId,  int workoutPlanId,  String workoutName,  int weekday,  List<Exercise> exercises)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Workout() when $default != null:
-return $default(_that.workoutId,_that.workoutName,_that.weekday,_that.exercises);case _:
+return $default(_that.workoutId,_that.workoutPlanId,_that.workoutName,_that.weekday,_that.exercises);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.workoutId,_that.workoutName,_that.weekday,_that.exercises)
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? workoutId,  String workoutName,  int weekday,  List<Exercise> exercises)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? workoutId,  int workoutPlanId,  String workoutName,  int weekday,  List<Exercise> exercises)  $default,) {final _that = this;
 switch (_that) {
 case _Workout():
-return $default(_that.workoutId,_that.workoutName,_that.weekday,_that.exercises);case _:
+return $default(_that.workoutId,_that.workoutPlanId,_that.workoutName,_that.weekday,_that.exercises);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.workoutId,_that.workoutName,_that.weekday,_that.exercises)
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? workoutId,  String workoutName,  int weekday,  List<Exercise> exercises)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? workoutId,  int workoutPlanId,  String workoutName,  int weekday,  List<Exercise> exercises)?  $default,) {final _that = this;
 switch (_that) {
 case _Workout() when $default != null:
-return $default(_that.workoutId,_that.workoutName,_that.weekday,_that.exercises);case _:
+return $default(_that.workoutId,_that.workoutPlanId,_that.workoutName,_that.weekday,_that.exercises);case _:
   return null;
 
 }
@@ -215,10 +216,11 @@ return $default(_that.workoutId,_that.workoutName,_that.weekday,_that.exercises)
 
 
 class _Workout with DiagnosticableTreeMixin implements Workout {
-   _Workout({this.workoutId, required this.workoutName, required this.weekday, final  List<Exercise> exercises = const <Exercise>[]}): _exercises = exercises;
+   _Workout({this.workoutId, required this.workoutPlanId, required this.workoutName, required this.weekday, final  List<Exercise> exercises = const <Exercise>[]}): _exercises = exercises;
   
 
 @override final  int? workoutId;
+@override final  int workoutPlanId;
 @override final  String workoutName;
 @override final  int weekday;
  final  List<Exercise> _exercises;
@@ -240,21 +242,21 @@ _$WorkoutCopyWith<_Workout> get copyWith => __$WorkoutCopyWithImpl<_Workout>(thi
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'Workout'))
-    ..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('workoutName', workoutName))..add(DiagnosticsProperty('weekday', weekday))..add(DiagnosticsProperty('exercises', exercises));
+    ..add(DiagnosticsProperty('workoutId', workoutId))..add(DiagnosticsProperty('workoutPlanId', workoutPlanId))..add(DiagnosticsProperty('workoutName', workoutName))..add(DiagnosticsProperty('weekday', weekday))..add(DiagnosticsProperty('exercises', exercises));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Workout&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.workoutName, workoutName) || other.workoutName == workoutName)&&(identical(other.weekday, weekday) || other.weekday == weekday)&&const DeepCollectionEquality().equals(other._exercises, _exercises));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Workout&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.workoutPlanId, workoutPlanId) || other.workoutPlanId == workoutPlanId)&&(identical(other.workoutName, workoutName) || other.workoutName == workoutName)&&(identical(other.weekday, weekday) || other.weekday == weekday)&&const DeepCollectionEquality().equals(other._exercises, _exercises));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,workoutId,workoutName,weekday,const DeepCollectionEquality().hash(_exercises));
+int get hashCode => Object.hash(runtimeType,workoutId,workoutPlanId,workoutName,weekday,const DeepCollectionEquality().hash(_exercises));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Workout(workoutId: $workoutId, workoutName: $workoutName, weekday: $weekday, exercises: $exercises)';
+  return 'Workout(workoutId: $workoutId, workoutPlanId: $workoutPlanId, workoutName: $workoutName, weekday: $weekday, exercises: $exercises)';
 }
 
 
@@ -265,7 +267,7 @@ abstract mixin class _$WorkoutCopyWith<$Res> implements $WorkoutCopyWith<$Res> {
   factory _$WorkoutCopyWith(_Workout value, $Res Function(_Workout) _then) = __$WorkoutCopyWithImpl;
 @override @useResult
 $Res call({
- int? workoutId, String workoutName, int weekday, List<Exercise> exercises
+ int? workoutId, int workoutPlanId, String workoutName, int weekday, List<Exercise> exercises
 });
 
 
@@ -282,10 +284,11 @@ class __$WorkoutCopyWithImpl<$Res>
 
 /// Create a copy of Workout
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? workoutId = freezed,Object? workoutName = null,Object? weekday = null,Object? exercises = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? workoutId = freezed,Object? workoutPlanId = null,Object? workoutName = null,Object? weekday = null,Object? exercises = null,}) {
   return _then(_Workout(
 workoutId: freezed == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
-as int?,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
+as int?,workoutPlanId: null == workoutPlanId ? _self.workoutPlanId : workoutPlanId // ignore: cast_nullable_to_non_nullable
+as int,workoutName: null == workoutName ? _self.workoutName : workoutName // ignore: cast_nullable_to_non_nullable
 as String,weekday: null == weekday ? _self.weekday : weekday // ignore: cast_nullable_to_non_nullable
 as int,exercises: null == exercises ? _self._exercises : exercises // ignore: cast_nullable_to_non_nullable
 as List<Exercise>,

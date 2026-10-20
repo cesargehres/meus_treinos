@@ -14,12 +14,25 @@ class WorkoutDayScreen extends StatefulWidget {
 }
 
 class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
+  late final AppLifecycleListener _lifecycleListener;
+
   @override
   void initState() {
     super.initState();
+    // O app pode ficar dias em segundo plano com esta tela aberta. Ao voltar,
+    // o dia pode ser outro ou o treino pode ter sido editado.
+    _lifecycleListener = AppLifecycleListener(
+      onShow: () => widget.viewModel.getWorkoutDay.execute(),
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.viewModel.getWorkoutDay.execute();
     });
+  }
+
+  @override
+  void dispose() {
+    _lifecycleListener.dispose();
+    super.dispose();
   }
 
   @override
@@ -27,9 +40,15 @@ class _WorkoutDayScreenState extends State<WorkoutDayScreen> {
     Color textColor = Theme.of(context).colorScheme.onPrimary;
 
     return ListenableBuilder(
-      listenable: widget.viewModel,
+      // Escuta o command também, senão a tela não sai do treino carregado
+      // antes enquanto busca o de agora.
+      listenable: Listenable.merge([
+        widget.viewModel,
+        widget.viewModel.getWorkoutDay,
+      ]),
       builder: (context, state) {
-        if (widget.viewModel.getWorkoutDay.value.isRunning) {
+        if (widget.viewModel.getWorkoutDay.value.isIdle ||
+            widget.viewModel.getWorkoutDay.value.isRunning) {
           return const Center(child: CircularProgressIndicator());
         }
 

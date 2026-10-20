@@ -7,6 +7,7 @@ part 'workout_db_model.freezed.dart';
 abstract class WorkoutDbModel with _$WorkoutDbModel {
   factory WorkoutDbModel({
     int? workoutId,
+    required int workoutPlanId,
     required String workoutName,
     required int weekday
   }) = _WorkoutDbModel;

@@ -3,14 +3,20 @@ import 'package:meus_treinos/data/repositories/workouts/workout_repository_inter
 import 'package:meus_treinos/data/services/local/database_local_interface.dart';
 import 'package:meus_treinos/data/services/models/exercise_db_model/exercise_db_model.dart';
 import 'package:meus_treinos/data/services/models/workout_db_model/workout_db_model.dart';
+import 'package:meus_treinos/data/services/models/workout_plan_db_model/workout_plan_db_model.dart';
 import 'package:meus_treinos/domain/models/exercise/exercise.dart';
 import 'package:meus_treinos/domain/models/workout/workout.dart';
+import 'package:meus_treinos/domain/models/workout_plan/workout_plan.dart';
 import 'package:meus_treinos/data/services/exceptions/exceptions.dart';
 import 'package:result_dart/result_dart.dart';
 
 class WorkoutRepository implements WorkoutRepositoryInterface {
   final DataBaseLocalInterface _dataBaseLocal;
 
+  WorkoutPlan? _activeWorkoutPlan;
+  WorkoutPlan? get activeWorkoutPlan => _activeWorkoutPlan;
+
+  // Treinos da ficha ativa.
   List<Workout> _workouts = [];
   List<Workout> get workouts => _workouts;
 
@@ -18,6 +24,24 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
   Workout? get currentWorkout => _currentWorkout;
 
   WorkoutRepository({required dataBaseLocal}) : _dataBaseLocal = dataBaseLocal;
+
+  /// Busca a ficha ativa no banco só na primeira vez; depois usa o cache.
+  Future<WorkoutPlan> _loadActiveWorkoutPlan() async {
+    final WorkoutPlan? cachedWorkoutPlan = _activeWorkoutPlan;
+    if (cachedWorkoutPlan != null) return cachedWorkoutPlan;
+
+    final WorkoutPlanDbModel workoutPlanDbModel = await _dataBaseLocal
+        .readActiveWorkoutPlan();
+
+    final WorkoutPlan workoutPlan = WorkoutPlan(
+      workoutPlanId: workoutPlanDbModel.workoutPlanId,
+      workoutPlanName: workoutPlanDbModel.workoutPlanName,
+      isActive: workoutPlanDbModel.isActive,
+    );
+
+    _activeWorkoutPlan = workoutPlan;
+    return workoutPlan;
+  }
 
   @override
   Future<Result<Exercise>> createExercise({required Exercise exercise}) async {
@@ -75,6 +99,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
     try {
       final WorkoutDbModel result = await _dataBaseLocal.createWorkout(
         workoutDbModel: WorkoutDbModel(
+          workoutPlanId: workout.workoutPlanId,
           workoutName: workout.workoutName.toLowerCase(),
           weekday: workout.weekday,
         ),
@@ -82,6 +107,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
 
       final Workout resultWorkout = Workout(
         workoutId: result.workoutId,
+        workoutPlanId: result.workoutPlanId,
         workoutName: result.workoutName,
         weekday: result.weekday,
         exercises: <Exercise>[],
@@ -104,11 +130,17 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
   @override
   Future<Result<Workout>> getWorkoutByWeekday({required int weekday}) async {
     try {
+      final WorkoutPlan activeWorkoutPlan = await _loadActiveWorkoutPlan();
+
       final WorkoutDbModel? workoutDbModel = await _dataBaseLocal
-          .readWorkoutByWeekday(weekday: weekday);
+          .readWorkoutByWeekday(
+            workoutPlanId: activeWorkoutPlan.workoutPlanId!,
+            weekday: weekday,
+          );
 
       Workout workout = Workout(
         workoutId: workoutDbModel!.workoutId,
+        workoutPlanId: workoutDbModel.workoutPlanId,
         workoutName: workoutDbModel.workoutName,
         weekday: workoutDbModel.weekday,
         exercises: <Exercise>[],
@@ -133,8 +165,6 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
 
       workout = workout.copyWith(exercises: newExercises);
 
-      _currentWorkout = workout;
-
       return Success(workout);
     } catch (e) {
       return Failure(Exception('Erro ao buscar treino do dia: $e'));
@@ -144,11 +174,16 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
   @override
   Future<Result<List<Workout>>> getWorkouts() async {
     try {
-      final List<WorkoutDbModel> result = await _dataBaseLocal.readWorkouts();
+      final WorkoutPlan activeWorkoutPlan = await _loadActiveWorkoutPlan();
+
+      final List<WorkoutDbModel> result = await _dataBaseLocal.readWorkouts(
+        workoutPlanId: activeWorkoutPlan.workoutPlanId!,
+      );
 
       List<Workout> workouts = result.map((workoutDbModel) {
         return Workout(
           workoutId: workoutDbModel.workoutId,
+          workoutPlanId: workoutDbModel.workoutPlanId,
           workoutName: workoutDbModel.workoutName,
           weekday: workoutDbModel.weekday,
           exercises: <Exercise>[],
@@ -352,6 +387,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
       final WorkoutDbModel workoutDbModel = await _dataBaseLocal.updateWorkout(
         workoutDbModel: WorkoutDbModel(
           workoutId: workout.workoutId,
+          workoutPlanId: workout.workoutPlanId,
           workoutName: workout.workoutName.toLowerCase(),
           weekday: workout.weekday,
         ),
@@ -359,6 +395,7 @@ class WorkoutRepository implements WorkoutRepositoryInterface {
 
       Workout newWorkout = Workout(
         workoutId: workoutDbModel.workoutId,
+        workoutPlanId: workoutDbModel.workoutPlanId,
         workoutName: workoutDbModel.workoutName,
         weekday: workoutDbModel.weekday,
         exercises: <Exercise>[],

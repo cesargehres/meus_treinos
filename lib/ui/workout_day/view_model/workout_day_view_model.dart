@@ -29,6 +29,9 @@ class WorkoutDayViewModel extends ChangeNotifier {
       notifyListeners();
       return Success(unit);
     }, (failure) {
+      // Não deixa na tela o treino de uma busca anterior.
+      _workoutDay = null;
+      notifyListeners();
       return Failure(failure);
     });
   }

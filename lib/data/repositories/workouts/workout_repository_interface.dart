@@ -3,6 +3,7 @@ import 'package:meus_treinos/domain/models/workout/workout.dart';
 import 'package:result_dart/result_dart.dart';
 
 abstract interface class WorkoutRepositoryInterface {
+  // Os treinos da semana são sempre os da ficha ativa.
   Future<Result<List<Workout>>> getWorkouts();
   Future<Result<Workout>> getWorkoutByWeekday({required int weekday});
   Future<Result<Workout>> createWorkout({required Workout workout});
