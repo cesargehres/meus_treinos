@@ -13,7 +13,7 @@ App mobile em Flutter para organizar a rotina de musculação da semana. Cada di
 
 ## Funcionalidades
 
-- **Treino do dia:** ao abrir o app, mostra o treino do dia da semana atual com a lista de exercícios.
+- **Treino do dia:** ao abrir o app, mostra o treino do dia da semana atual com a lista de exercícios. Ao voltar para o app depois de um tempo em segundo plano, a tela é atualizada, então o treino certo aparece mesmo se o dia tiver virado.
 - **Planejamento semanal:** um treino para cada dia, de segunda a domingo, criado automaticamente.
 - **Gerenciamento de exercícios:** adicionar, editar e excluir exercícios, com confirmação antes de excluir.
 - **Descanso:** cada exercício tem uma faixa de descanso obrigatória, com mínimo e máximo em segundos (exibida como `45 a 60s`). Exercícios salvos antes dessa versão aparecem como "Não definido" até serem editados.
@@ -45,7 +45,7 @@ flowchart LR
         W[Widgets / Screens] --> VM[ViewModels]
     end
     subgraph Domain
-        M[Models<br/>Workout, Exercise]
+        M[Models<br/>WorkoutPlan, Workout, Exercise]
     end
     subgraph Data
         R[WorkoutRepository] --> S[DataBaseLocalSqlite]
@@ -66,8 +66,9 @@ flowchart LR
 - **Result pattern em vez de exceções:** os erros fazem parte do tipo de retorno (`Result<Workout>`), então quem chama é obrigado a tratar o caso de falha.
 - **Exceções tipadas na camada de dados:** a `DataBaseLocalException` carrega uma mensagem para o usuário, uma mensagem técnica para log e um `code` (ex: `SQLITE_DELETE_EXERCISE_NOT_FOUND`).
 - **Modelos de banco separados dos de domínio:** `WorkoutDbModel` e `Workout` evoluem de forma independente, e a UI não depende do formato das tabelas.
-- **Integridade no banco:** chaves estrangeiras habilitadas (`PRAGMA foreign_keys`) e `ON DELETE CASCADE` entre treinos e exercícios.
-- **Migração do banco:** o banco está na versão 2. Quem já usava o app recebe as colunas novas (descanso, observações e ordem dos exercícios) pelo `onUpgrade`, sem perder treinos e exercícios.
+- **Fichas de treino:** os treinos da semana pertencem a uma ficha (tabela `workout_plans`), e só uma ficha fica ativa por vez. Por enquanto o app usa uma única ficha, criada automaticamente, mas a estrutura já está pronta para ter várias fichas e alternar entre elas.
+- **Integridade no banco:** chaves estrangeiras habilitadas (`PRAGMA foreign_keys`) e `ON DELETE CASCADE` de fichas para treinos e de treinos para exercícios.
+- **Migração do banco:** o banco está na versão 3. Quem já usava o app recebe pelo `onUpgrade` as colunas de descanso, observações e ordem dos exercícios (versão 2) e a tabela de fichas (versão 3), com os treinos que já existiam ligados a uma ficha padrão. Treinos e exercícios continuam iguais, sem perda de dados.
 
 ### Estrutura de pastas
 
@@ -79,7 +80,7 @@ lib/
 │       ├── local/               # Implementação SQLite e interface
 │       ├── models/              # Modelos do banco (freezed)
 │       └── exceptions/          # Exceções tipadas
-├── domain/models/               # Workout, Exercise (freezed)
+├── domain/models/               # WorkoutPlan, Workout, Exercise (freezed)
 ├── ui/
 │   ├── app/                     # MaterialApp, rotas e bottom navigation
 │   ├── shared/                  # Bottom sheets e diálogos reutilizáveis
@@ -107,6 +108,22 @@ Os arquivos gerados pelo freezed (`*.freezed.dart`) já estão versionados. Se v
 ```bash
 dart run build_runner build --delete-conflicting-outputs
 ```
+
+## Testes
+
+Testes de unidade e de widget:
+
+```bash
+flutter test
+```
+
+A migração do banco tem testes de integração, que rodam com o SQLite de verdade num emulador ou celular:
+
+```bash
+flutter test integration_test --no-uninstall -d <id do aparelho>
+```
+
+Os testes usam um arquivo de banco separado e não mexem nos treinos do app. Mesmo assim, use o `--no-uninstall`: sem ele, o Flutter desinstala o app no fim do teste e os treinos salvos no aparelho são apagados junto.
 
 ## Autor
 
