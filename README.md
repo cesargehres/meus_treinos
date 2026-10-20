@@ -44,16 +44,16 @@ flowchart LR
     subgraph UI
         W[Widgets / Screens] --> VM[ViewModels]
     end
-    subgraph Domain
-        M[Models<br/>WorkoutPlan, Workout, Exercise]
+    subgraph Domínio
+        M[WorkoutPlan<br/>Workout<br/>Exercise]
     end
-    subgraph Data
+    subgraph Dados
         R[WorkoutRepository] --> S[DataBaseLocalSqlite]
     end
-    VM --> R
+    VM ---> R
+    VM -. usa .-> M
+    M -. criados pelo .- R
     S --> DB[(SQLite)]
-    VM -.usa.-> M
-    R -.converte para.-> M
 ```
 
 - **Widgets:** só desenham a tela e repassam as ações do usuário para o ViewModel.
@@ -108,22 +108,6 @@ Os arquivos gerados pelo freezed (`*.freezed.dart`) já estão versionados. Se v
 ```bash
 dart run build_runner build --delete-conflicting-outputs
 ```
-
-## Testes
-
-Testes de unidade e de widget:
-
-```bash
-flutter test
-```
-
-A migração do banco tem testes de integração, que rodam com o SQLite de verdade num emulador ou celular:
-
-```bash
-flutter test integration_test --no-uninstall -d <id do aparelho>
-```
-
-Os testes usam um arquivo de banco separado e não mexem nos treinos do app. Mesmo assim, use o `--no-uninstall`: sem ele, o Flutter desinstala o app no fim do teste e os treinos salvos no aparelho são apagados junto.
 
 ## Autor
 
